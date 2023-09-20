@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+<main>
+
+
+    <h3 class="list-title">Take Actions For Issue Student</h3>
+    <nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/admin/issue_students">Issue Student</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Take Action</li>
+  </ol>
+</nav>
+    <!-- List view -->
+    <div class="card">
+    {% if message %}
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+
+            {{message}}</div>
+        {% endif %}
+
+
+  {% if action_type == 1 %}
+                <p class="title"><b>Student's Issue Description:</b> The status of <span class="name">{{student_name}}'s</span> current report is rated <span class="name">orange</span> and requires a PG convenor and follow-up with the student's supervisors.</p>
+                <br><br><p>Please enter what you need to be reminded of and send it to the <span class="name">student's convenor.</span></p>
+   {% elif action_type == 2 %}
+                <p class="title"><b>Student's Issue Description:</b> The status of <span class="name">{{student_name}}'s</span> current report is rated <span class="name">red</span> and an immediate meeting between the student and the PG convenor needs to be arranged.</p>
+
+                <br><br><p>Please enter what you need to be reminded of and send it to his/her <span class="name">PG convenor.</span></p>
+   {% elif action_type == 3 %}
+                <p class="title"><b>Student's Issue Description:</b> The status of <span class="name">{{student_name}}'s</span> report has <span class="name">two orange colours</span> and an email needs to be sent to the student telling him/her that progress is slow and that he/she should meet with the PG convenor.</p>
+                <br><br><p>Please enter what you need to be reminded of and send it to the <span class="name">student and his/her PG convenor.</span></p>
+   {% endif %}
+
+       <form method="POST" onsubmit="return confirm('Are you sure you want to submit?');">
+       <label for="content">Reminder Content:</label><br>
+       <textarea id="content" name="content" required>{{reminder_content}}</textarea><br><br>
+           <input type="hidden" name="action_type" value="{{action_type}}">
+       <input type="submit" class="btn btn-right" value="Send Reminder">
+            <a href="/admin/issue_students"  class="btn btn-update">Back</a>
+   </form>
+
+</div>
+</main>
+
+<script>
+
+
+</script>
+
+<style>
+textarea {
+  width: 80%;
+  height: 200px;
+  padding: 12px 20px;
+  background-color: #f8f8f8;
+  color:grey;
+  font-size: 16px;
+}
+
+.name{
+color:#ff3333;
+}
+.title{
+font-size:18px;
+}
+
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    <div class="info-container">
+        <div class="info-label">
+            <h2>Student Personal Info</h2>
+            <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/supervisor/supervisee">Supervisee List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Student Personal Info</li>
+        </ol>
+    </nav>
+            {% if message %}
+
+            {% if alertStyling == "Red" %}
+                <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+                <div class="alert alert-success" role="alert">
+            {% elif alertStyling == "Yellow" %}
+                <div class="alert alert-warning" role="alert">
+            {% else %}
+                <div>
+            {% endif %}
+                <p >{{message}}</p>
+                </div>
+            {% endif %}
+        </div>
+    <div class="card">
+        <div class="info-content">
+            <h3 class="title">Personal Profile</h3>
+            {% for detail in students_list %}
+            <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Full
+                                name</small> <span>{{detail[0]}} {{detail[1]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Email
+                                Address</small> <span>{{detail[2]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small
+                                class="heading-font-family fw-500">Department</small>
+                            <span>
+                                {% if detail[3] == 'DEM' %}
+                                Environmental Management (DEM)
+                                {% elif detail[3] == 'DTSS' %}
+                                Tourism, Sport and Society (DTSS)
+                                {% elif detail[3] == 'SOLA' %}
+                                Landscape Architecture (SOLA)
+                                {% endif %}
+                            </span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Enrolment
+                                Date</small> <span>{{detail[4]}} </span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small
+                                class="heading-font-family fw-500">Address</small> <span>{{detail[5]}} </span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small
+                                class="heading-font-family fw-500">Phone</small> <span>{{detail[6]}} </span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">PhD
+                                Status</small> <span>{{detail[7]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Thesis
+                                Title</small> <span>{{detail[8]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+
+
+                </div>
+
+                {% endfor %}
+
+
+                <h3 class="title">Supervisor Information</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Main
+                                Supervisor</small> <span>{{supervisor_list[0]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Associate
+                                Supervisor</small> <span>{{supervisor_list[1]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Other
+                                Supervisor </small> <span>{{supervisor_list[2]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+
+                </div>
+              </div>
+        <div class="button">
+        <a href="/supervisor/supervisee"  class="btn btn-right"  id="supervisee">
+            Back
+         </a>
+        </div>
+        </div>
+    </div>
+
+</main>
+
+
+<style>
+    .contact-details-cell {
+        border: 1px solid #eef1f2;
+        margin-bottom: 6px;
+        padding: 20px 22px 18px;
+        overflow: hidden;
+        color: #666;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .contact-details-cell span {
+        flex: 1;
+        align-self: flex-end;
+        font-size: 1.1em;
+        margin: 0;
+        text-align: right;
+        color: #666;
+    }
+
+    .card {
+        border-top: none;
+        border-radius: 0;
+    }
+
+    .mr-b-20 {
+        font-size: 1.5rem;
+    }
+
+    .show {
+        border-radius: 6.25rem;
+        margin: 30px 10px;
+        width: 100%;
+    }
+
+    small {
+        color: #bbb;
+        font-size: 1em;
+    }
+
+
+    h2 {
+        text-align: center;
+    }
+
+     .btn-right {
+       margin-right: 30px;
+        margin-top: 30px;
+        width:70px;
+
+    }
+
+    .button{
+    text-align:center;
+    }
+
+</style>
+
+
+
+{% endblock %}

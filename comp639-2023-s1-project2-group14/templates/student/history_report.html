@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+ <div class="card">
+     {% if report_list %}
+     {% if show_button== 'Yes' %}
+        <a href="/admin/student_detail?ID={{report_list[0][3]}}">
+                        <button class="btn-update" type="submit">Back</button>
+        </a>
+     {% endif %}
+    <h3 class="list-title">History Report List</h3>
+
+    <!-- List view -->
+            <div class="row">
+               {% for report in report_list %}
+                <div class="card-area">
+                 <div class="card-body">
+                   <h4 class="card-title">Term: {{report[1]}} - 6MR</h4>
+                     <div class="media">
+                     <i class="fa-solid fa-book-open-reader"></i>
+                         <div class="media-body">
+                            <p class="card-text"><b>Report ID:</b> {{report[0]}}</p>
+                            <p class="card-text"><b>Due Date: </b>{{report[2]}}</p>
+                         </div>
+                     </div>
+                <br>
+                     {% if show_button== 'Yes' %}
+                     <a href="/view_report/sectionA?report_id={{report[0]}}&term={{report[1]}}&routing=admin-part"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a><br><br>
+                     {% else %}
+                     <a href="/view_report/sectionA?report_id={{report[0]}}&term={{report[1]}}&routing=student-part"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a><br><br>
+                     {% endif %}
+                    </div>
+                     </div>
+
+       {% endfor %}
+  </div>
+    {% else %}
+     <h3 class="no-record">Sorry, This student didn't have history report.</h3>
+     {% endif %}
+
+
+</div>
+
+</main>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+
+<style>
+
+table td, table th {
+  padding: 10px;
+  line-height: 2;
+}
+
+.card-area{
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 1rem;
+    box-shadow: 0 10px 40px 0 rgba(24, 28, 33, 0.04);
+    margin-right:40px;
+    margin-top:30px;
+    min-width:210px;
+    max-width:280px;
+}
+
+.card .row{
+justify-content: center;
+}
+
+
+.fa-book-open-reader{
+font-size:40px;
+margin-right:30px;
+color:#38998F;
+margin-top:20px;
+}
+
+.card-title{
+padding-button:20px;
+}
+
+.media{
+padding-top:10px;
+}
+
+.btn-update{
+align-items: center;
+}
+
+a i{
+margin-right:5px;
+}
+</style>
+
+
+{% endblock %}

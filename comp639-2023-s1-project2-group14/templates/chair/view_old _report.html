@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+  <h3 class="list-title">Report List</h3>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/chair/students">Students List</a></li>
+      <li class="breadcrumb-item"><a href="/chair/student_detail?ID={{student_id}}">Student Personal Info</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Report List</li>
+    </ol>
+  </nav>
+
+  <div class="card">
+    {% if select_result %}
+    <table>
+      <thead>
+        <tr>
+          <th>Report ID</th>
+          <th>Due date</th>
+          <th>Term</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody id="first-objective-body">
+
+        {% for item in select_result %}
+        <tr>
+          <td>{{ item[0] }}</td>
+          <td>{{ item[3] }}</td>
+          <td>{{ item[4] }}</td>
+          <td>
+
+            <a href="/view_report/sectionA?report_id={{item[0]}}&term={{item[4]}}&routing=14chairview"
+              class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report
+
+          </td>
+
+        </tr>
+
+        {% endfor %}
+    </table>
+  </div>
+  {% else %}
+  <h3 class="no-record">You have no history report availabe</h3>
+  {% endif %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+<style>
+  tr {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    text-align: center;
+  }
+
+  .dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid black;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .dialog p {
+    margin-bottom: 10px;
+  }
+
+  .table {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    margin-top: 20px;
+  }
+
+  a i {
+    margin-right: 5px;
+  }
+
+  .card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card .table td,
+  .card .table th {
+    padding-right: 40px;
+  }
+</style>
+{% endblock %}

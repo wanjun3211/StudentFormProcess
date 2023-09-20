@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    {% if routing == 'check-supervisors' %}
+    <div class="alert alert-warning" role="alert">Make sure to review all sections and confirm the report in Section D
+        once you are ready</div>
+    {% elif routing == 'filling-sectionE'%}
+    <div class="alert alert-warning" role="alert">Make sure to review all sections and fill in the sectionE when you are
+        in Section D.
+    </div>
+
+    {% endif %}
+    <div class="breadcrumbs">
+        <ul class="nav nav-tabs">
+            <li {% if section=='sectionA' %} class="active" {% endif %}><a
+                    href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a>
+            </li>
+            <li {% if section=='sectionB' %} class="active" {% endif %}><a
+                    href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a>
+            </li>
+            <li {% if section=='sectionC' %} class="active" {% endif %}><a
+                    href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a>
+            </li>
+            <li {% if section=='sectionD' %} class="active" {% endif %}><a
+                    href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a>
+            </li>
+            {% if routing != 'check-supervisors' and routing != 'view-supervisors-other' and routing !=
+            'filling-sectionE' %}
+            <li {% if section=='sectionE' %} class="active" {% endif %}><a
+                    href="/view_report/sectionE?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section E</a>
+            </li>
+            <li {% if section=='sectionF' %} class="active" {% endif %}><a
+                    href="/view_report/sectionF?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section F</a>
+            </li>
+            {% endif %}
+            {% if routing == '1' %}
+            <li><a href='/admin/send_reminder?report=done'>Exit Report</a></li>
+            {% elif routing == 'student-part' %}
+            <li><a href='/student/history_report'>Exit Report</a></li>
+            {% elif routing == 'view-supervisors' or routing == 'finish-sectionE' or routing == 'filling-sectionE'%}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+            {% elif routing == 'view-supervisors-other' %}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+            {% elif routing == 'check-supervisors'%}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}' onclick="showMessage()">Exit Report</a></li>
+
+            {% elif routing == 'done_report' %}
+            <li><a href='/admin/send_reminder?report=completed'>Exit Report</a></li>
+            {% elif routing == 'admin-part' %}
+            <li><a href='/student/history_report?report_id={{report_id}}'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='12' %}
+            <li><a href='/convenor/students'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='11' %}
+            <li><a href='/chair/grade/task'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='13' %}
+            <li><a href='/chair/students'>Exit Report</a></li>
+            {% endif %}
+             <!-- this part is for chair to take action on Section F -->
+             {% if routing =='14' %}
+             <li><a href='/chair/grade/task'>Exit Report</a></li>
+             {% endif %}
+             {% if routing =='14chairview' %}
+             <li><a href='/chair/students'>Exit Report</a></li>
+             {% endif %}
+            {% if routing =='12view' %}
+            <li><a href='/convenor/students'>Exit Report</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="card">
+        {% if sectionc_part1 %}
+        <h4 class="info-title">Faculty of Environment Society and Design</h4>
+        <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+        <h3 class="section-title">Section C - Evaluation of Faculty (or Centre) performance</h3>
+        <h4>Rate each of the following as they affect your study within the Faculty (or Centre).
+            If you have any concerns about undertaking this evaluation then please go directly to section D and then
+            complete section F.
+            Select the appropriate rating described (Very good, good, satisfactory, unsatisfactory or not relevant):
+        </h4>
+
+        <div class="table_row">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Feedback</th>
+                        <th scope="col">Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for part1 in sectionc_part1 %}
+                    <tr>
+                        <td>Access to supervisors – principal</td>
+                        <td>{{part1[0]}}</td>
+                        {% if part1_comments[0] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[0]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Access to supervisors – associate/others</td>
+                        <td>{{part1[1]}}</td>
+                        {% if part1_comments[1] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[1]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Supervisor expertise– principal</td>
+                        <td>{{part1[2]}}</td>
+                        {% if part1_comments[2] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[2]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Supervisor expertise – associate/others</td>
+                        <td>{{part1[3]}}</td>
+                        {% if part1_comments[3] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[3]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Quality of supervisor feedback – principal</td>
+                        <td>{{part1[4]}}</td>
+                        {% if part1_comments[4] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[4]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Quality of supervisor feedback – associate/ others</td>
+                        <td>{{part1[5]}}</td>
+                        {% if part1_comments[5] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[5]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Timeliness of supervisor feedback – principal</td>
+                        <td>{{part1[6]}}</td>
+                        {% if part1_comments[6] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[6]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Timeliness of supervisor feedback – associate/ others</td>
+                        <td>{{part1[7]}}</td>
+                        {% if part1_comments[7] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[7]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Courses available</td>
+                        <td>{{part1[8]}}</td>
+                        {% if part1_comments[8] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[8]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Workspace</td>
+                        <td>{{part1[9]}}</td>
+                        {% if part1_comments[9] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[9]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Computer facilities</td>
+                        <td>{{part1[10]}}</td>
+                        {% if part1_comments[10] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[10]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>ITS support</td>
+                        <td>{{part1[11]}}</td>
+                        {% if part1_comments[11] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[11]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Research software</td>
+                        <td>{{part1[12]}}</td>
+                        {% if part1_comments[12] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[12]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Library facilities</td>
+                        <td>{{part1[13]}}</td>
+                        {% if part1_comments[13] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[13]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Teaching & Learning Centre support</td>
+                        <td>{{part1[14]}}</td>
+                        {% if part1_comments[14] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[14]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Statistical support</td>
+                        <td>{{part1[15]}}</td>
+                        {% if part1_comments[15] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[15]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Research equipment</td>
+                        <td>{{part1[16]}}</td>
+                        {% if part1_comments[16] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[16]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Technical support</td>
+                        <td>{{part1[17]}}</td>
+                        {% if part1_comments[17] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[17]}}</td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Financial resources</td>
+                        <td>{{part1[18]}}</td>
+                        {% if part1_comments[18] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{part1_comments[18]}}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    {% for other in sectionc_part1_other %}
+                    <tr>
+                        <td>Other {{other[0]}}</td>
+                        <td>{{other[1]}}</td>
+                        {% if other[2] is none %}
+                        <td></td>
+                        {% else %}
+                        <td>{{other[2]}}</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="sectionC-part2">
+            {% for entry in sectionc_part2 %}
+            <p>How frequently do you have a meeting with your supervisor?</p>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <input type="radio" name="meeting" value="Weekly" id="weekly" {% if entry[0]=='Weekly' %} checked {%
+                        endif %} disabled>
+                    <label for="weekly">Weekly</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="radio" name="meeting" value="Fortnightly" id="fortnightly" {% if
+                        entry[0]=='Fortnightly' %} checked {% endif %} disabled>
+                    <label for="fortnightly">Fortnightly</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="radio" name="meeting" value="Monthly" id="monthly" {% if entry[0]=='Monthly' %} checked
+                        {% endif %}disabled>
+                    <label for="monthly">Monthly</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="radio" name="meeting" value="Every 3 months" id="3months" {% if
+                        entry[0]=='Every 3 months' %} checked {% endif %} disabled>
+                    <label for="3months">Every 3 months</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <input type="radio" name="meeting" value="Half yearly" id="halfyear" {% if entry[0]=='Half yearly'
+                        %} checked {% endif %} disabled>
+                    <label for="halfyear">Half yearly</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="radio" name="meeting" value="Not at all" id="none" {% if entry[0]=='Not at all' %}
+                        checked {% endif %} disabled>
+                    <label for="none">Not at all</label>
+                </div>
+            </div>
+            <p>What is the usual period for receiving feedback from your supervisor on submitted materials?</p>
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <input type="radio" name="feedback" value="1 week" id="1week" {% if entry[1]=='1 week' %} checked {%
+                        endif %} disabled>
+                    <label for="1week">1 week</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="radio" name="feedback" value="2 weeks" id="2weeks" {% if entry[1]=='2 weeks' %} checked
+                        {% endif %} disabled>
+                    <label for="2weeks">2 weeks</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="radio" name="feedback" value="1 month" id="1month" {% if entry[1]=='1 month' %} checked
+                        {% endif %} disabled>
+                    <label for="1month">1 month</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="radio" name="feedback" value="3 months" id="3months" {% if entry[1]=='3 months' %}
+                        checked {% endif %} disabled>
+                    <label for="3months">3 months</label>
+                </div>
+            </div>
+
+
+            <p>How do you receive your feedback from your supervisor? (Tick more than one box if appropriate)</p>
+            <div class="row">
+                <div class="col-sm-2">
+                    <input type="checkbox" name="feedback-supervisor" value="Softcopy" id="softopy" {% if ('Softcopy',)
+                        in sectionc_part2_feedback %}checked{%endif%} disabled>
+                    <label for="softcopy">Softcopy</label>
+                </div>
+                <div class="col-sm-4">
+                    <input type="checkbox" name="feedback-supervisor" value="Comments on submitted material"
+                        id="comments" {% if ('Comments on submitted material',) in sectionc_part2_feedback
+                        %}checked{%endif%} disabled>
+                    <label for="comments">Comments on submitted material</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="checkbox" name="feedback-supervisor" value="Verbally" id="verbally" {% if ('Verbally',)
+                        in sectionc_part2_feedback %}checked{%endif%} disabled>
+                    <label for="verbally">Verbally</label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="checkbox" name="feedback-supervisor" value="On a separate letter" id="separate" {% if
+                        ('On a separate letter',) in sectionc_part2_feedback %}checked{%endif%} disabled>
+                    <label for="separate">On a separate letter</label>
+                </div>
+            </div>
+
+            {% endfor %}
+
+        </div>
+        {% else %}
+        <h3 class="no-record">Sorry, This student didn't submit sectionC</h3>
+        {% endif %}
+    </div>
+</main>
+
+<style>
+    .card {
+        border-top: none;
+        border-radius: 0;
+    }
+
+    .sectionC-part2 {
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        padding: 10px;
+        border-radius: 5px;
+        margin: 20px 0;
+    }
+
+    .row {
+        display: block;
+    }
+
+    td,
+    th {
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        white-space: normal;
+        padding-left: 5px;
+    }
+
+    .table_row .table {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }
+</style>
+
+{% if routing == 'check-supervisors' %}
+<script>
+    function showMessage() {
+        alert('WARNING! You are exiting the report before checking all sections!');
+    }
+</script>
+{% endif %}
+
+
+
+{% endblock %}

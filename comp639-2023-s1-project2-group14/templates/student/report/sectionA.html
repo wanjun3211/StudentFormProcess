@@ -1,0 +1,655 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+  <div class="info-label">
+    {% if message %}
+
+    {% if alertStyling == "Red" %}
+    <div class="alert alert-danger" role="alert">
+      {% elif alertStyling == "Green" %}
+      <div class="alert alert-success" role="alert">
+        {% elif alertStyling == "Yellow" %}
+        <div class="alert alert-warning" role="alert">
+          {% else %}
+          <div>
+            {% endif %}
+            <p>{{message}}</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <ul class="nav nav-tabs">
+          <li><a href="/student/report/intro" {% if progress_id> 1 %} {% elif progress_id == 1
+              %}onclick="confirmBeforeMovingOn()"{% endif%}">Report Intro</a></li>
+          <li {% if section=='sectionA' %} class="active" {% endif %}><a
+              href="/student/report/sectionA?term={{term}}">Section A</a></li>
+          <li {% if section=='sectionB' %} class="active" {% endif %}><a href="/student/report/sectionB?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              B</a></li>
+          <li {% if section=='sectionC' %} class="active" {% endif %}><a href="/student/report/sectionC?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              C</a></li>
+          <li {% if section=='sectionD' %} class="active" {% endif %}><a href="/student/report/sectionD?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              D</a></li>
+          <li {% if section=='sectionF' %} class="active" {% endif %}><a href="/student/report/sectionF?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              F</a></li>
+        </ul>
+
+        <div class="card">
+          <!-- Warning bar for each section -->
+          {% if progress_id > 1 and progress_id < 6%} <div class="alert alert-danger" role="alert"> You cannot edit this
+            page as it is currently being processed by
+            {% if progress_id == 2 %}
+            supervisor
+            {%elif progress_id == 3%}
+            Convenor
+            {% elif progress_id == 5%}
+            admin
+            {% endif%}
+        </div>
+
+        {% endif %}
+
+        {% if progress_id == 6 %}
+        <div class="alert alert-warning" role="alert">The report is completed and this cannot be edited</div>
+        {% endif %}
+
+        <!-- Progress bar for each section -->
+        {% if progress_id != 1 %}
+        <h4>Report Finished Role:</h4>
+        {% if progress_id == 2 %}
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+            aria-valuemax="100">Student</div>
+          {% elif progress_id == 3 %}
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+              aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="20"
+              aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            {% elif progress_id == 5 %}
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+                aria-valuemax="100">Student</div>
+              <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30"
+                aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+              <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20"
+                aria-valuemin="0" aria-valuemax="100">Convenor</div>
+              {% elif progress_id == 6 %}
+              <span>Congratulations, this report has been completed.</span>
+              <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+                  aria-valuemax="100">Student</div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30"
+                  aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+                <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20"
+                  aria-valuemin="0" aria-valuemax="100">Convenor</div>
+                <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10"
+                  aria-valuemin="0" aria-valuemax="100">Admin</div>
+                {% endif %}
+              </div>
+              {% endif %}
+
+
+
+              <h4 class="faculty">Faculty of Environment Society and Design</h4>
+              <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+              <h3 class="section-title">Section A – Student Record</h3>
+
+              <h3 class="title">Personal Details</h3>
+
+              {% if progress_id == 1 %}<p class="note">You can not change the following information.</p>{% endif %}
+              <form method="POST" action="/student/report/sectionA">
+                <div class="profile">
+                  {% for student in students_list %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Name</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control " id="name" name="name" value="{{student[0]}}"
+                            readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Student ID</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="student-id" name="student-id"
+                            value="{{student[1]}}" readonly>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Enrolment Date</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="enrolment-date" name="enrolment-date"
+                            value="{{student[2]}}" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Current Address</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="current-address" name="current-address"
+                            value="{{student[3]}}" readonly>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Phone</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="phone" name="phone" value="{{student[4]}}"
+                            readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Email LU</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="email-lu" name="email-lu" value="{{student[5]}}"
+                            readonly>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Email Other</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="email-other" name="email-other" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Study Type</label>
+                        <div class="col-sm-9">
+                          <input type="radio" id="full-time" name="study-type" value="full-time" {% if
+                            student[6]=='Full-time' %}checked{% endif %} disabled>
+                          <label for="full-time">Full time</label>
+                          <input type="radio" id="part-time" name="study-type" value="Part-time" {% if
+                            student[6]=='Part-time' %}checked{% endif %} disabled>
+                          <label for="part-time">Part time</label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Thesis Title</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="thesis-title" name="thesis-title"
+                            value="{{student[7]}}" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {% endfor %}
+                </div>
+                <h3 class="title">Supervision Team</h3>
+                <div class="profile">
+                  {% if progress_id == 1 %}<p class="note">You can not change the following information.</p>{% endif%}
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Main Supervisor</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="supervisor" name="supervisor"
+                            value="{{supervisor_list[0]}}" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Associate Supervisor</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="associate-supervisor" name="associate-supervisor"
+                            value="{{supervisor_list[1]}}" readonly>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Other Supervisors / Advisors</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="other-supervisors" name="other-supervisors"
+                            value="{{supervisor_list[2]}}" readonly>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <h3 class="title">Scholarships Held</h3>
+
+                <div class="scholarship_area">
+                  {% if progress_id == 1 %}<p class="note">Please enter a number up to two decimals for the value
+                    section.</p><br>{% endif %}
+                  {% if scholar_list %}
+                  {% for scholars in scholar_list %}
+                  {% if loop.index != 1 %}
+                  <hr> {% endif %}
+                  <div class="scholarship">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label for="scholarship{{ loop.index0 }}-name" class="col-sm-3 col-form-label">Name</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="scholarship{{ loop.index0 }}-name"
+                              name="scholarship{{ loop.index0 }}-name" value="{{ scholars[0] }}" {% if
+                              scholars[4]=='Submitted' or progress_id> 1 %}readonly{% endif %} required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label" for="scholarship{{ loop.index0 }}-value">Value</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="scholarship{{ loop.index0 }}-value"
+                              name="scholarship{{ loop.index0 }}-value" value="{{ scholars[1] }}"
+                              pattern="^[0-9]+(\.[0-9]{1,2})?$" {% if scholars[4]=='Submitted' or progress_id>
+                            1%}readonly{% endif %} required>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label for="scholarship{{ loop.index0 }}-tenure"
+                            class="col-sm-3 col-form-label">Tenure</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="scholarship{{ loop.index0 }}-tenure"
+                              name="scholarship{{ loop.index0 }}-tenure" value="{{ scholars[2] }}" {% if
+                              scholars[4]=='Submitted' or progress_id> 1%}readonly{% endif %} required>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label" for="scholarship{{ loop.index0 }}-enddate">End
+                            Date</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="scholarship{{ loop.index0 }}-enddate"
+                              name="scholarship{{ loop.index0 }}-enddate" value="{{ scholars[3] }}" {% if
+                              scholars[4]=='Submitted' or progress_id> 1 %}readonly{% endif %} required>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% if progress_id == 1 %}
+                    <a id="confirm-delete" class="btn btn-delete" href="#"
+                      onclick="confirmDelete('/student/report/sectionA?scholar_id={{scholars[5]}}&term={{term}}&report_id={{report_id}}')">Delete
+                      Scholarship</a>
+                    {% endif %}
+                  </div>
+
+                  {% endfor %}
+
+                  {% else %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label for="scholarship0-name" class="col-sm-3 col-form-label">Name</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="scholarship0-name" name="scholarship0-name"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="scholarship0-value">Value</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="scholarship0-value" name="scholarship0-value"
+                            pattern="^[0-9]+(\.[0-9]{1,2})?$" placeholder="Please enter a number up to two decimals."
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label for="scholarship0-tenure" class="col-sm-3 col-form-label">Tenure</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="scholarship0-tenure" name="scholarship0-tenure"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="scholarship0-enddate">End Date</label>
+                        <div class="col-sm-9">
+                          <input type="date" class="form-control" id="scholarship0-enddate" name="scholarship0-enddate"
+                            required>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="note">If you don't have scholarships, please delete the form above.</p>
+                  <button class="btn btn-delete delete-scholarship-btn">Delete Scholarship</button>
+                  {% endif %}
+                  <div id="scholarship-container">
+                  </div>
+                  {% if progress_id == 1 %}
+                  <p class="note">If you have more scholarships, please click the button to add the scholarship details.
+                  </p>
+
+                  <button id="add-scholarship-btn" class="btn btn-update" {% if progress_id> 1 %}disabled{% endif %}>Add
+                    Scholarship</button>
+                  {%endif%}
+                </div>
+                <h3 class="title">Employment at LU</h3>
+                <div class="employ-form">
+
+                  {% if progress_id == 1 %}<p class="note">Provide details of hours/week and name of supervisor for
+                    employment:</p>{%endif%}
+                  {% if employment_list %}
+                  {% for employment in employment_list %}
+                  {% if loop.index != 1 %}
+                  <hr> {% endif %}
+                  <div class="employment">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label for="employment{{ loop.index0 }}-teaching"
+                            class="col-sm-3 col-form-label">Teaching</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="employment{{ loop.index0 }}-teaching"
+                              name="employment{{ loop.index0 }}-teaching" value="{{employment[1]}}" {% if
+                              employment[4]=='Submitted' or progress_id> 1%}readonly{% endif %}>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label"
+                            for="employment{{ loop.index0 }}-research">Research</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="employment{{ loop.index0 }}-research"
+                              name="employment{{ loop.index0 }}-research" value="{{employment[2]}}" {% if
+                              employment[4]=='Submitted' or progress_id> 1 %}readonly{% endif %}>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group row">
+                          <label class="col-sm-3 col-form-label" for="employment{{ loop.index0 }}-other">Other</label>
+                          <div class="col-sm-9">
+                            <input type="text" class="form-control" id="employment{{ loop.index0 }}-other"
+                              name="employment{{ loop.index0 }}-other" value="{{employment[3]}}" {% if
+                              employment[4]=='Submitted' or progress_id> 1 %}readonly{% endif %}>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {% if progress_id == 1 %}
+                    <a id="confirm-delete" class="btn btn-delete" href="#"
+                      onclick="confirmDelete('/student/report/sectionA?employment_id={{employment[5]}}&term={{term}}&report_id={{report_id}}')"
+                      {% if progress_id> 1 %}disabled{% endif %}>Delete Employment</a><br>
+                    {% endif %}
+                  </div>
+                  {% endfor %}
+                  {% else %}
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label for="employment0-teaching" class="col-sm-3 col-form-label">Teaching</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="employment0-teaching" name="employment0-teaching">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="employment0-research">Research</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="employment0-research" name="employment0-research">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label" for="employment0-other">Other</label>
+                        <div class="col-sm-9">
+                          <input type="text" class="form-control" id="employment0-other" name="employment0-other">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="note">If you don't have employment, please delete the form above.</p>
+                  <button class="btn btn-delete delete-employment-btn">Delete Employment</button>
+
+                  {% endif %}
+                  <div id="employment-container">
+                  </div>
+                  {% if progress_id == 1 %}
+                  <p class="note">If you have more employment, please click the button to add the employment details.
+                  </p>
+                  <button id="add-employment-btn" class="btn btn-update" {% if progress_id> 1 %}disabled{% endif %}>Add
+                    Employment</button>
+                  {% endif %}
+                </div>
+                {% if progress_id == 1 %}
+                <p class="note save-draft">Once you have saved your draft, you can edit your content at any time.</p>
+                <div class="update-button">
+                  <input class="btn btn-right" type="submit" name="submit" id="save" value="Save Draft" {% if
+                    progress_id> 1 %}disabled{% endif %}>
+                </div>
+                <input type="hidden" name="term" value="{{term}}">
+                {% endif %}
+              </form>
+
+            </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+<script>
+  // Add Scholarship
+  document.getElementById('add-scholarship-btn').addEventListener('click', function (event) {
+    event.preventDefault();  // Block default behaviour
+
+    var scholarshipIndex = document.querySelectorAll('.scholarship').length;
+
+    var newScholarshipHTML = `
+      <div class="scholarship">
+       <hr>
+      <div class="row">
+          <div class="col-md-6">
+              <div class="form-group row">
+                            <label for="scholarship${scholarshipIndex}-name" class="col-sm-3 col-form-label">Name</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="scholarship${scholarshipIndex}-name" name="scholarship${scholarshipIndex}-name" required>
+                            </div>
+              </div>
+          </div>
+          <div class="col-md-6">
+              <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="scholarship${scholarshipIndex}-value" >Value</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control"id="scholarship${scholarshipIndex}-value" name="scholarship${scholarshipIndex}-value" pattern="^[0-9]+(\.[0-9]{1,2})?$" required placeholder="Please enter a number up to two decimals.">
+                            </div>
+                          </div>
+              </div>
+       </div>
+
+        <div class="row">
+          <div class="col-md-6">
+              <div class="form-group row">
+                            <label for="scholarship${scholarshipIndex}-tenure" class="col-sm-3 col-form-label">Tenure</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="scholarship${scholarshipIndex}-tenure" name="scholarship${scholarshipIndex}-tenure" required >
+                            </div>
+                          </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="scholarship${scholarshipIndex}-enddate">End Date</label>
+                            <div class="col-sm-9">
+                              <input type="date" class="form-control" id="scholarship${scholarshipIndex}-enddate" name="scholarship${scholarshipIndex}-enddate" required>
+                            </div>
+                  </div>
+              </div>
+       </div>
+
+
+        <button class="btn btn-delete delete-scholarship-btn">Delete Scholarship</button>
+      </div>
+
+    `;
+
+    var scholarshipContainer = document.getElementById('scholarship-container');
+    scholarshipContainer.insertAdjacentHTML('beforeend', newScholarshipHTML);
+  });
+
+  // Delete Scholarship
+  document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('delete-scholarship-btn')) {
+      event.preventDefault();  // Block default behaviour
+
+      var scholarship = event.target.parentNode;
+      scholarship.parentNode.removeChild(scholarship);
+    }
+  });
+
+  //Add Employment
+  document.getElementById('add-employment-btn').addEventListener('click', function (event) {
+    event.preventDefault();  // Block default behaviour
+
+    var employmentIndex = document.querySelectorAll('.employment').length;
+
+    var newEmploymentHTML = `
+      <div class="employment">
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+              <div class="form-group row">
+                            <label for="employment${employmentIndex}-teaching" class="col-sm-3 col-form-label">Teaching</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="employment${employmentIndex}-teaching" name="employment${employmentIndex}-teaching">
+                            </div>
+                          </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="employment${employmentIndex}-research">Research</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="employment${employmentIndex}-research" name="employment${employmentIndex}-research">
+                            </div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group row">
+                            <label class="col-sm-3 col-form-label" for="employment${employmentIndex}-other">Other</label>
+                            <div class="col-sm-9">
+                              <input type="text" class="form-control" id="employment${employmentIndex}-other" name="employment${employmentIndex}-other">
+                            </div>
+                  </div>
+              </div>
+       </div>
+
+        <button class="btn btn-delete delete-employment-btn">Delete Employment</button>
+
+      </div>
+    `;
+
+    var employmentContainer = document.getElementById('employment-container');
+    employmentContainer.insertAdjacentHTML('beforeend', newEmploymentHTML);
+  });
+
+  // Delete Employment
+  document.addEventListener('click', function (event) {
+
+    if (event.target.classList.contains('delete-employment-btn')) {
+      event.preventDefault();  // Block default behaviour
+
+      var employment = event.target.parentNode;
+      employment.parentNode.removeChild(employment);
+    }
+  });
+
+  function confirmDelete(url) {
+
+    var result = confirm("Are you sure you want to delete?");
+    if (result) {
+      window.location.href = url;
+    }
+  }
+
+  function confirmBeforeMovingOn() {
+    var sectionComplete = {% if progress_id == 1 %} false{% else %} true{% endif %};
+  if (!sectionComplete) {
+    var result = confirm("Before moving on to other sections, please ensure that you have saved your changes in this section.");
+    if (!result) {
+      event.preventDefault(); // Prevent the default link behavior if the user cancels
+    }
+  }
+  }
+</script>
+
+
+<style>
+  hr {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 0;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 1px;
+    width: 100%;
+    color: #999;
+  }
+
+  .btn-delete {
+    margin-bottom: 10px;
+  }
+
+  .save-draft {
+    margin-top: 30px;
+  }
+
+  .scholarship_area,
+  .employ-form,
+  .profile {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+
+
+{% endblock %}

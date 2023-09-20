@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    {% if message %}
+
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+                <p >{{message}}</p>
+            </div>
+        {% endif %}
+
+        {% if noConfirmation %}
+            <h3 class="list-title">Unconfirmed Registrations</h3>
+            <div class="alert alert-danger" role="alert">
+                <p >{{message}}</p>
+            </div>
+        {% else %}
+
+
+
+        <h3 class="list-title">Unconfirmed Registrations</h3>
+        <h6> Note: Please make a selection before clicking confirm or reject! </h6>
+        <div class="card">
+
+
+        <div>
+            <div>
+                <form method="POST" action="/admin/registrations">
+
+                    <div class="row">
+                    <div class="search-registrations title-line">
+                        <input type="text" placeholder="Search by Name" name="searchEntry-registrations" pattern="[A-Za-z]+">
+                          <button class="btn" type="submit" name="search-registrations"><i class="fa fa-search"></i></button>
+                      </div>
+
+                    <button class="btn" type="submit" name="reset">Reset</button>
+
+                  </div>
+                 </div>
+  {% if unconfirmedList %}
+            
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for unconfirmedUser in unconfirmedList %}
+                        <tr>
+                            <td><input type="checkbox" name="ids" value="{{unconfirmedUser[6]}}"></td>
+                            <td>{{unconfirmedUser[0]}} {{unconfirmedUser[1]}}</td>
+                            <td>{{unconfirmedUser[2]}}</td>
+                        </tr>
+                    {% endfor %}
+                    <div class="btn-area">
+                    <button class="btn-update" type="submit"  name="submit-checkbox" onclick="return confirm('Are you sure you want to confirm the selected students?')">Confirm Selected Only</button>
+                    <button class="btn-delete" type="submit"  name="reject-checkbox" onclick="return confirm('Do you want to reject these users?')">Reject Selected Only</button>
+                </div>
+                        </form>
+                
+                </tbody>
+            </table>
+            <div>
+                <a href="/admin/confirmRegistrations">
+                    <button class="btn" type="submit" onclick="return confirm('Are you sure you want to confirm all?')">Confirm All Students</button>
+                </a>
+                 <small> Note: This will confirm all students listed above. </small>
+            </div>
+            
+            <div class="reject">
+                <a class="btn-update" href="/admin/reconfirmRejected">
+                   See Rejected List
+                </a>
+                 <small> Note: This will show the list of rejected students. </small>
+            </div>
+
+ {% else %}
+      <h3 class="no-record">Sorry, There is no unconfirmed User.</h3>
+    {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    
+
+</main>
+
+<style>
+    .title-line .btn, .btn-update{
+    margin-right:10px;
+    }
+
+   .table{
+     overflow-x: hidden;
+     overflow-y: hidden;
+    }
+
+     tr {
+   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card .table td{
+padding-right:40px;
+}
+
+    .reject{
+    margin-top:20px;
+    }
+
+.card{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-area{
+margin:20px 0;
+ display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h6{
+text-align: center;
+}
+
+</style>
+
+{% endblock %}

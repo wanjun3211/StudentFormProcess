@@ -1,0 +1,76 @@
+<div class="side-menu">
+    <div class="system-name">
+        <h2>PG Monitoring System</h2>
+    </div>
+    <div class="profile-pic">
+        <div class="count-indicator">
+            <img class="img-xs rounded-circle " src="{{ url_for('static',filename= 'images/face1.jpg') }}" alt="">
+        </div>
+        <div class="profile-name">
+            <h4 class="mb-0 font-weight-normal">{{user_name}}</h4>
+            <span>{{user_role}}</span>
+        </div>
+    </div>
+    <ul>
+        <li {% if active=='home' %} class='nav-active' {% endif %}><a href="/"><i class="fa-solid fa-house"></i><span
+                    class="shape1"></span>&nbsp Dashboard</a></li>
+        {% if user_role == 'admin' %}
+        <li {% if active=='supervisor' %} class='nav-active' {% endif %}><a href="/admin/supervisors"><i
+                    class="fa-solid fa-user"></i><span>&nbsp; Supervisors</span></a></li>
+        <li {% if active=='student' %} class='nav-active' {% endif %}><a href="/admin/students"><i
+                    class="fa-solid fa-clipboard-user"></i><span>&nbsp; Students</span></a></li>
+        <li {% if active=='regis' %} class='nav-active' {% endif %}><a href="/admin/registrations"><i
+                    class="fa-solid fa-list"></i><span>&nbsp; Registrations</span></a></li>
+        <li {% if active=='reminder' %} class='nav-active' {% endif %}><a href="/admin/send_reminder"><i
+                    class="fa-solid fa-book-bookmark"></i><span>&nbsp; Report Admin</span></a></li>
+        <li {% if active=='issue' %} class='nav-active' {% endif %}><a href="/admin/issue_students"><i
+                    class="fa-solid fa-circle-question"></i><span> Issue Students</span></a></li>
+        {% elif user_role == 'convenor'%}
+        <li {% if active=='con_student' %} class='nav-active' {% endif %}><a href="/convenor/students"><i
+                    class="fa-solid fa-clipboard-user"></i><span>&nbsp; Students List</span></a></li>
+        <li {% if active=='con_supervisor' %} class='nav-active' {% endif %}><a href="/convenor/supervisors"><i
+                    class="fa-solid fa-user"></i><span>&nbspSupervisors List </span></a></li>
+        {% if double_role == 'Yes' %}
+        <li {% if active=='supervisee' %} class='nav-active' {% endif %}><a href="/supervisor/supervisee"><i
+                    class="fa-solid fa-circle-info"></i><span>&nbsp;My Supervisee</span></a></li>
+        {% endif %}
+
+        {% elif user_role == 'student'%}
+        <li {% if active=='profile' %} class='nav-active' {% endif %}><a href="/student/personalinfo"><i
+                    class="fa-solid fa-id-card"></i><span>&nbsp; Personal Info</span></a></li>
+        <li {% if active=='report' %} class='nav-active' {% endif %}><a href="/student/report/intro"><i
+                    class="fa-solid fa-book-bookmark"></i><span>&nbsp; Current 6MR</span></a></li>
+        <li {% if active=='history-rep' %} class='nav-active' {% endif %}><a href="/student/history_report"><i
+                    class="fa-solid fa-bookmark"></i><span>&nbsp; History 6MR</span></a></li>
+        {% elif user_role == 'supervisor'%}
+        <li {% if active=='sup_profile' %} class='nav-active' {% endif %}><a href="/supervisor/profile"><i
+                    class="fa-solid fa-id-card"></i><span>&nbsp; Personal Info</span></a></li>
+        <li {% if active=='supervisee' %} class='nav-active' {% endif %}><a href="/supervisor/supervisee"><i
+                    class="fa-solid fa-clipboard-user"></i><span>&nbsp; Supervisee</span></a></li>
+
+
+        {% elif user_role == 'chair'%}
+
+        <li {% if active=='staff' %} class='nav-active' {% endif %}><a href="/chair/staff"><i
+                    class="fa-solid fa-user"></i><span>&nbsp; Staff</span></a></li>
+        <li {% if active=='chair_student' %} class='nav-active' {% endif %}><a href="/chair/students"><i
+                    class="fa-solid fa-clipboard-user"></i><span>&nbsp; Students</span></a></li>
+        <li {% if active=='task' %} class='nav-active' {% endif %}><a href="/chair/grade/task"><i class="fa-solid fa-list-check"></i><span>&nbsp; Task</span></a></li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <div class="user">
+                <i class="fa-solid fa-circle-user"></i>{{user_name}}
+                <button class="btn logout-btn">
+                    <a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

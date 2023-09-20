@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    <div class="info-container">
+        <div class="info-label">
+            <h2>Report Lists</h2>
+               <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/supervisor/supervisee">Supervisee List</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Report List</li>
+        </ol>
+    </nav>
+
+            {% if message %}
+
+            {% if alertStyling == "Red" %}
+                <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+                <div class="alert alert-success" role="alert">
+            {% elif alertStyling == "Yellow" %}
+                <div class="alert alert-warning" role="alert">
+            {% else %}
+                <div>
+            {% endif %}
+                <p >{{message}}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+                      <div class="card">
+
+                    <h3>Current supervisee: {{current_supervisee[0][0]}}</h3>
+
+            <small>Note: The main supervisor must approve the students' report before filling in Section E.<br> Associate and other supervisors do not have this privileges.</small>
+
+
+
+    <div class="table_row">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Report ID</th>
+                    <th scope="col">Term</th>
+                    <th scope="col">Due Date</th>
+                    <th scope="col">Report Progress</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            {% for reports in report_list%}
+
+            <tbody>
+                <tr>
+
+                    <td>{{reports[0]}}</td>
+                    <td>{{reports[3]}}</td>
+                    <td>{{reports[2]}}</td>
+                    
+
+                    {% if reports[1] == 6 %}
+                    <td>Completed</td>
+                    <td>
+                        <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=view-supervisors"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a>
+                    </a></td>
+                    <td></td>
+
+                    {% elif reports[1] == 5 %} 
+                    <td>Admin</td>
+                    <td>
+                        <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=finish-sectionE"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a>
+                    </td>
+                    <td></td>
+                    {% elif reports[1] == 3 %} 
+                    <td>Convenor</td> 
+                    <td>
+                        <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=finish-sectionE"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a>
+                    </td>
+                    <td></td>
+                    {% elif reports[1] == 2 %} 
+                    <td>Supervisor</td> 
+                    {% if supervisor_role == 'main' %}
+                        {% if reports[4] == 'confirm' or reports[4] == 'checked' %}
+                            {% if reports[5] == 'No' %}
+                            <td><a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=filling-sectionE"class="btn-delete" name="view_report"><i class="fa-solid fa-pen-to-square"></i>Fill Section E</a></td><!-- To add code here from Beibei-->
+                            <td></td>
+                            {% else %}
+                            <td>
+                                <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=finish-sectionE"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a>
+                            </td>
+                            <td><span class="notes">You have filled in the sectionE.</span></td>
+                            {% endif %}
+                        {% else %}
+                        <td>
+                            <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=check-supervisors"class="btn" name="view_report"><i class="fa-solid fa-pen-to-square"></i>Check Report</a>
+                        </td>
+                        <td></td>
+                        {% endif %}
+                      
+                    {% else %}
+                        {% if reports[4] == 'confirm' or reports[4] == 'checked' %}
+                            {% if reports[5] == 'No' %}   <!-- Determine if sectionE is filled in -->
+                                <td><a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=filling-sectionE"class="btn-delete" name="view_report"><i class="fa-solid fa-pen-to-square"></i>Fill Section E</a></td> <!-- To add code here from Beibei-->
+                                <td></td>
+                            {% else %}
+                                <td>
+                                    <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=finish-sectionE"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a>
+                                </td>
+                                <td>You have filled in the sectionE.</td>
+                            {% endif %}
+                        {% else %}
+                            <td>
+                                <a href="/view_report/sectionA?report_id={{reports[0]}}&term={{reports[3]}}&routing=view-supervisors-other"class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Student Sections</a>
+                            </td>
+                            <td></td>
+                        {% endif %}
+                    {% endif %}
+                    {% elif reports[1] == 1 %} 
+                    <td>Student</td> 
+                    <td></td>
+                    <td></td>
+                    {% endif %}
+
+                    
+                    
+
+                    
+                    
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+        <div class="button">
+        <a href="/supervisor/supervisee">
+            <button class="btn"  type="submit">Back</button>
+        </a>
+          </div>
+    </div>
+</div>
+
+
+</main>
+
+<style>
+      h2 ,h3,small{
+        text-align: center;
+    }
+
+     .table{
+     overflow-x: hidden;
+     overflow-y: hidden;
+     margin-top:20px;
+    }
+     tr {
+   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-update i,.btn-delete i,.btn i{
+margin-right:5px;
+}
+
+.card .table td{
+padding-right:40px;
+}
+.card{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.button{
+    text-align:center;
+    }
+
+    .notes{
+    font-size:13px;
+    color:#666;
+    }
+</style>
+
+{% endblock %}

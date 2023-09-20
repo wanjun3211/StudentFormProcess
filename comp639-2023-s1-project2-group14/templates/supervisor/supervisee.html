@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+<main>
+
+    <h3 class="list-title">Supervisee List</h3>
+    <div class="card">
+    <!-- List view -->
+    {% if message %}
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+
+            {{message}}</div>
+        {% endif %}
+
+            <!-- Search section -->
+       <div class="row">
+            <div class="title-line">
+                  <form method="POST" onsubmit="return validateSearch()">
+                  <input type="text" id="search" name="search" placeholder="Student Name...">
+                  <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                  </form>
+            </div>
+           <div>
+                <a href="/supervisor/supervisee"  id="reset">
+                        <button class="btn"  type="submit">RESET</button>
+                    </a>
+               </div>
+        </div>
+      {% if select_result %}
+                     <div>
+        <p>Note:</p>
+        <p class="table-note">DEM: Department of Environmental Management. DTSS: Department of Tourism, Sport and Society. SOLA: School of Landscape Architecture </p>
+            </div>
+    <div class="table_row">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Email Address</th>
+                <th scope="col">Department</th>
+                <th scope="col">Phone</th>
+                <th scope="col">My Role</th>
+                <th scope="col">Detail</th>
+                <th scope="col">Report</th>
+            </tr>
+            </thead>
+
+            {% for students in select_result %}
+            <tbody>
+            <tr>
+
+                {% for student in students %}
+                <td>{{student}}</td>
+                {% endfor %}
+                <td>
+                    <form method="POST" action="/supervisor/supervisee_detail">
+                        <input type="hidden" name="student_id" value="{{students[0]}}">
+                        <button class="btn-update" type="submit"><i class="fa-solid fa-eye"></i>Detail</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="POST" action="/supervisor/view_reports">
+                        <input type="hidden" name="ID" value="{{students[0]}}">
+                        <button class="btn-update" type="submit"><i class="fa-solid fa-chart-simple"></i>Report</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+             {% endif %}
+    </div>
+    </div>
+
+</main>
+
+<script>
+
+function validateSearch() {
+  var searchInput = document.getElementById("search").value;
+  if (searchInput == "") {
+    alert("Sorry,you have not entered any search terms, please re-enter it.");
+    return false;
+  }
+  return true;
+}
+
+</script>
+
+<style>
+ .table{
+     overflow-x: hidden;
+     overflow-y: hidden;
+    }
+     tr {
+   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-update i{
+margin-right:5px;
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="full-screen-container" >
+    <div class="login-container">
+        <h3 class="login-title">Welcome to PG Monitoring System</h3>
+        <form method="POST">
+
+            <div class="input-group">
+                 <label class="form-label" for="form2Example1">Email address:</label>
+                <input type="email" name="user_email" class="form-control" id="form2Example1" />
+
+                <label class="form-label" for="form2Example2">Password:</label>
+                <input type="password" name="user_password" class="form-control" id="form2Example2"/>
+
+            </div>
+            <br>
+
+            {% if error_msg %}
+                <div class="error_msg">
+                    {{error_msg}}
+                </div>
+            {% endif %}
+            <br>
+            <input type="submit" value="Login" class="login-button">
+        </form>
+        <div class="signup-box">
+            <p class="signup-text">Don't have an account? </p> 
+            <a href = "signup" id="signup">
+                <button type="button" class="signup-button">Sign Up</button>
+            </a>
+        </div>
+        
+        
+       
+    </div>
+</div>
+
+{% endblock %}

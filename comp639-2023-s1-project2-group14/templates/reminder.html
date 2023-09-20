@@ -1,0 +1,48 @@
+<!-- Banner for reminders -->
+
+{% if reminder_result %}
+    <div class="reminder_container">
+        <div class="reminder">
+    {% for reminder in reminder_result %}
+       {% if reminder[1]=='action' %}
+            <div class="alert alert-danger">
+                <strong>Warning!</strong> {{reminder[2]}}
+       {% else %}
+            <div class="alert alert-warning">
+                <strong>Message!</strong> {{reminder[2]}}
+       {% endif %}
+            <a href="/reminder?reminder_id={{reminder[0]}}" type="submit">
+                  <i class="fa-solid fa-xmark"></i>
+            </a>
+         </div>
+    {% endfor %}
+        </div>
+         </div>
+{% else %}
+    <p></p>
+
+
+
+{% endif %}
+
+
+<style>
+.btn{
+float:right;
+}
+
+.fa-xmark {
+font-size:24px;
+color:#993333;
+}
+
+.reminder a {
+float:right;
+}
+
+.reminder i:hover  {
+color:#38998F;
+}
+
+
+</style>

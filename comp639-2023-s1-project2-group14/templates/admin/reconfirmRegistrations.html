@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    {% if message %}
+
+        {% if alertStyling == "Red" %}
+        <div class="alert alert-danger" role="alert">
+        {% elif alertStyling == "Green" %}
+        <div class="alert alert-success" role="alert">
+        {% elif alertStyling == "Yellow" %}
+        <div class="alert alert-warning" role="alert">
+        {% else %}
+        <div>
+        {% endif %}
+            <p >{{message}}</p>
+        </div>
+    {% endif %}
+
+    <h3 class="list-title">Rejected Registrations List</h3>
+               <nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/admin/registrations">Registration</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Rejected Registrations List</li>
+  </ol>
+</nav>
+  <div class="card">
+    {% if rejectedlist %}
+      <div>
+    <table class="table ">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Email Address</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <form action="/admin/reconfirmRejected" method="POST">
+            {% for student in rejectedlist %}
+            <tr>
+                <td><input type="checkbox" name="rejectedids" value="{{student[6]}}"></td>
+                <td>{{student[0]}} {{student[1]}}</td>
+                <td>{{student[2]}}</td>
+            </tr>
+            {% endfor %}
+            <div>
+                <button class="btn-update" type="submit" id="submit-checkbox-rejects" name="submit-checkbox-rejects" onclick="return confirm('Are you sure you want to confirm the selected students?')">Confirm Selected Only</button>
+            </div>
+            </form>
+            </tbody>
+    </table>
+          <a href="/admin/registrations"  class="btn btn-update">Back</a>
+            </div>
+      {% else %}
+      <h3 class="no-record">Sorry, There is no Rejected data.</h3>
+      {% endif %}
+  </div>
+</main>
+
+
+<style>
+   .table{
+   margin-top:20px;
+     overflow-x: hidden;
+     overflow-y: hidden;
+     width:100%;
+     display:table;
+    }
+
+     tr {
+   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card .table td{
+padding-right:40px;
+}
+
+.card{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+</style>
+
+{% endblock %}

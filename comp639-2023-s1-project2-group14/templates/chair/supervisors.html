@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+
+    <h3 class="list-title">Staff List</h3>
+
+    <!-- List view -->
+
+    {% if message %}
+    {% if alertStyling == "Red" %}
+    <div class="alert alert-danger" role="alert">
+        {% elif alertStyling == "Green" %}
+        <div class="alert alert-success" role="alert">
+            {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+                {% else %}
+                <div>
+                    {% endif %}
+
+                    {{message}}</div>
+                {% endif %}
+                <div class="card">
+                    <div class="row">
+
+                        <form action="/chair/staff" method="POST">
+                            <div class="title-line">
+                                <label for="inputGroupSelect">Department:</label>
+                                <select class="custom-select" id="inputGroupSelect" name="inputGroupSelect">
+                                    <option value="ALL" {% if sort_depart=='ALL' %} selected {% endif %}>All</option>
+                                    <option value="DEM" {% if sort_depart=='DEM' %} selected {% endif %}>DEM</option>
+                                    <option value="DTSS" {% if sort_depart=='DTSS' %} selected {% endif %}>DTSS</option>
+                                    <option value="SOLA" {% if sort_depart=='SOLA' %} selected {% endif %}>SOLA</option>
+                                </select>
+                                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+
+
+                        <!-- Sort by roles-->
+                        <form action="/chair/staff" method="POST">
+                            <div class="title-line">
+                                <label for="inputGroupSelect">Role:</label>
+                                <select class="custom-select" id="inputGroupSelect" name="role">
+                                    <option value="ALL" {% if sort_role=='all' %}selected{% endif%}>All</option>
+                                    <option value="supervisor" {% if sort_role=='supervisor' %}selected{% endif%}>
+                                        Supervisor</option>
+                                    <option value="convenor" {% if sort_role=='convenor' %}selected{% endif%}>Convenor
+                                    </option>
+                                </select>
+                                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+
+
+                        <!-- Search section -->
+                        <div class="title-line">
+                            <form method="POST" onsubmit="return validateSearch()">
+                                <input type="text" id="search" name="search" placeholder="Staff Name...">
+                                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+
+                        <a href="/chair/staff" id="reset">
+                            <button class="btn" type="submit">RESET</button>
+                        </a>
+
+                    </div>
+                    <div>
+                        {% if select_result %}
+                        <p>Note:</p>
+                        <p class="table-note">- DEM: Department of Environmental Management. DTSS: Department of
+                            Tourism, Sport and Society. SOLA: School of Landscape Architecture </p>
+                        <p class="table-note"> - Swipe the table to the right to see more information. </p>
+                    </div>
+
+                    <div class="table_row">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Email Address</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Students</th>
+                                    <th scope="col">Role</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for supervisors in select_result %}
+                                <tr>
+                                    <td>{{supervisors[0]}}</td>
+                                    <td>{{supervisors[1]}}</td>
+                                    <td>{{supervisors[2]}}</td>
+                                    {% if supervisors[3] =='DEM' %}
+                                    <td><span class="depart dem">DEM</span></td>
+                                    {% elif supervisors[3]=='DTSS' %}
+                                    <td><span class="depart dtss">DTSS</span></td>
+                                    {% elif supervisors[3] =='SOLA' %}
+                                    <td><span class="depart sola">SOLA</span></td>
+                                    {% endif %}
+                                    <td>{{supervisors[4]}}</td>
+                                    {% if supervisors[5] != 'convenor' %}
+                                    <td>{{supervisors[5]}}</td>
+                                    <td><span class="status badge-success">Supervisor</span></td>
+
+                                    {% elif supervisors[5] == 'convenor'%}
+                                    <td></td>
+                                    <td> <span class="status badge-warning">Convenor</span></td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+
+                            {% for convenors in convenor_list %}
+                            <tr>
+
+                                <td>{{convenors[0]}}</td>
+                                <td>{{convenors[1]}}</td>
+                                <td>{{convenors[2]}}</td>
+                                {% if convenors[3] =='DEM' %}
+                                <td><span class="depart dem">DEM</span></td>
+                                {% elif convenors[3]=='DTSS' %}
+                                <td><span class="depart dtss">DTSS</span></td>
+                                {% elif convenors[3]=='SOLA' %}
+                                <td><span class="depart sola">SOLA</span></td>
+                                {% endif %}
+                                <td>{{convenors[4]}}</td>
+                                <td></td>
+                                <td> <span class="status badge-warning">{{convenors[5]}}</span></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% elif role_list %}
+                    <h5>Note:</h5>
+                    <p class="table-note">- DEM: Department of Environmental Management. DTSS: Department of Tourism,
+                        Sport and Society. SOLA: School of Landscape Architecture </p>
+                    <p class="table-note"> - Swipe the table to the right to see more information. </p>
+                </div>
+
+                <div class="table_row">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Full Name</th>
+                                <th scope="col">Email Address</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Phone</th>
+                                <th scope="col">Students</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for role in role_list %}
+                            <tr>
+                                <td>{{role[0]}}</td>
+                                <td>{{role[1]}}</td>
+                                <td>{{role[2]}}</td>
+                                {% if role[3] =='DEM' %}
+                                <td><span class="depart dem">DEM</span></td>
+                                {% elif role[3]=='DTSS' %}
+                                <td><span class="depart dtss">DTSS</span></td>
+                                {% elif role[3]=='SOLA' %}
+                                <td><span class="depart sola">SOLA</span></td>
+                                {% endif %}
+                                <td>{{role[4]}}</td>
+                                {% if role[5] != 'convenor'%}
+                                <td>{{role[5]}}</td>
+                                <td><span class="status badge-success">Supervisor</span></td>
+                                {% else %}
+                                <td></td>
+                                <td><span class="status badge-warning">Convenor</span></td>
+                                {% endif %}
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+
+            </div>
+</main>
+
+<script>
+
+
+    function validateSearch() {
+        var searchInput = document.getElementById("search").value;
+        if (searchInput == "") {
+            alert("Sorry,you have not entered any search terms, please re-enter it.");
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+</script>
+<style>
+    .title-line select {
+        width: 150px;
+        padding: 5px 10px;
+        height: 35px;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        font-weight: 700;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 0.25rem;
+    }
+
+    .badge-warning {
+        color: #212529;
+        background-color: #fed269;
+    }
+
+    .badge-success {
+        color: #212529;
+        background-color: #99CC99;
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,453 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+  {% if routing == 'check-supervisors' %}
+  <div class="alert alert-warning" role="alert">Make sure to review all sections and confirm the report in Section D
+    once you are ready</div>
+  {% elif routing == 'filling-sectionE'%}
+  <div class="alert alert-warning" role="alert">Make sure to review all sections and fill in the sectionE when you are
+    in Section D.
+  </div>
+
+  {% endif %}
+
+  <div class="breadcrumbs">
+    <ul class="nav nav-tabs">
+      <li {% if section=='sectionA' %} class="active" {% endif %}><a
+          href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a></li>
+      <li {% if section=='sectionB' %} class="active" {% endif %}><a
+          href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a></li>
+      <li {% if section=='sectionC' %} class="active" {% endif %}><a
+          href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a></li>
+      <li {% if section=='sectionD' %} class="active" {% endif %}><a
+          href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a></li>
+      {% if routing != 'check-supervisors' and routing != 'view-supervisors-other' and routing != 'filling-sectionE'%}
+      <li {% if section=='sectionE' %} class="active" {% endif %}><a
+          href="/view_report/sectionE?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section E</a></li>
+      <li {% if section=='sectionF' %} class="active" {% endif %}><a
+          href="/view_report/sectionF?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section F</a></li>
+      {% endif %}
+      {% if routing =='1' %}
+      <li><a href='/admin/send_reminder?report=done'>Exit Report</a></li>
+      {% elif routing == 'student-part' %}
+      <li><a href='/student/history_report'>Exit Report</a></li>
+      {% elif routing == 'view-supervisors' or routing == 'finish-sectionE' or routing == 'filling-sectionE' %}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+      {% elif routing == 'view-supervisors-other' %}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+      {% elif routing == 'check-supervisors'%}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}' onclick="showMessage()">Exit Report</a></li>
+
+      {% elif routing == 'done_report' %}
+      <li><a href='/admin/send_reminder?report=completed'>Exit Report</a></li>
+      {% elif routing == 'admin-part' %}
+      <li><a href='/student/history_report?report_id={{report_id}}'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='12' %}
+      <li><a href='/convenor/students'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='12view' %}
+      <li><a href='/convenor/students'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='11' %}
+      <li><a href='/chair/grade/task'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='13' %}
+      <li><a href='/chair/students'>Exit Report</a></li>
+      {% endif %}
+      <!-- this part is for chair to take action on Section F -->
+      {% if routing =='14' %}
+      <li><a href='/chair/grade/task'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='14chairview' %}
+      <li><a href='/chair/students'>Exit Report</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="card">
+
+    <h4 class="info-title">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h3 class="section-title">Section B – Milestones</h3>
+    {% if sectionB_1 %}
+    <h4>Selete “not completed” box where applicable or give date of completion where appropriate in the related box.
+    </h4>
+
+    <div class="sectionB_part1">
+      <div class="row">
+        <div class="col-sm-5">
+          <label for="induction_program">Induction Programme (Compulsory)</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="induction_uncompleted" name="induction_study" value="uncompleted" {% if
+            sectionB_1[1]==none %}checked{% endif %} } disabled>
+          <label for="induction_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="induction_completed" name="induction_study" value="completed" {% if sectionB_1[1]
+            !=none %}checked{% endif %} disabled>
+          <label for="induction_completed">Completed</label>
+          <input type="date" id="induction_completion_date" name="induction_date" {% if sectionB_1[1] !=none
+            %}value="{{sectionB_1[1]}}" {% endif %} disabled>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-5">
+          <label for="mutual_expectations">Mutual Expectations Agreement (Compulsory)</label>
+        </div>
+        <div class="col-sm-3">
+
+          <input type="radio" id="mutual_uncompleted" name="mutual_study" value="uncompleted" {% if sectionB_1[2]==none
+            %}checked{% endif %} disabled>
+          <label for="mutual_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="mutual_completed" name="mutual_study" value="completed" {% if sectionB_1[2] !=none
+            %}checked{% endif %} disabled>
+          <label for="mutual_completed">Completed</label>
+          <input type="date" id="mutual_completion_date" name="mutual_date" {% if sectionB_1[2] !=none
+            %}value="{{sectionB_1[2]}}" {% endif %} disabled>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+          <label for="MEA">Kaupapa Māori Research MEA (Compulsory if relevant)</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="MEA_uncompleted" name="MEA_study" value="uncompleted" {% if sectionB_1[3]==none
+            %}checked{% endif %} disabled>
+          <label for="MEA_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="MEA_completed" name="MEA_study" value="completed" {% if sectionB_1[3] !=none
+            %}checked{% endif %} disabled>
+          <label for="MEA_completed">Completed</label>
+          <input type="date" id="MEA_completion_date" name="MEA_date" {% if sectionB_1[3] !=none
+            %}value="{{sectionB_1[3]}}" {% endif %} disabled>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+          <label for="intellectual_property">Intellectual Property Agreement (Compulsory if relevant)</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="intellectual_uncompleted" name="intellectual_study" value="uncompleted" {% if
+            sectionB_1[4]==none %}checked{% endif %} disabled>
+          <label for="intellectual_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="intellectual_completed" name="intellectual_study" value="completed" {% if
+            sectionB_1[4] !=none %}checked{% endif %} disabled>
+          <label for="intellectual_completed">Completed</label>
+          <input type="date" id="intellectual_completion_date" name="intellectual_date" {% if sectionB_1[4] !=none
+            %}value="{{sectionB_1[4]}}" {% endif %} disabled>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+
+          <label for="thesis_proposal">Thesis proposal seminar (Compulsory)</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="thesis_uncompleted" name="thesis_study" value="uncompleted" {% if sectionB_1[5]==none
+            %}checked{% endif %} disabled>
+          <label for="thesis_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="thesis_completed" name="thesis_study" value="completed" {% if sectionB_1[5] !=none
+            %}checked{% endif %} disabled>
+          <label for="thesis_completed">Completed</label>
+          <input type="date" id="thesis_completion_date" name="thesis_date" {% if sectionB_1[5] !=none
+            %}value="{{sectionB_1[5]}}" {% endif %}disabled>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+          <label for="research_proposal">Research Proposal Approved by appropriate Faculty/Centre Postgraduate or
+            equivalent Committee (Compulsory)</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="research_uncompleted" name="research_study" value="uncompleted" {% if
+            sectionB_1[6]==none %}checked{% endif %} disabled>
+          <label for="research_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="research_completed" name="research_study" value="completed" {% if sectionB_1[6] !=none
+            %}checked {% endif %} disabled>
+          <label for="research_completed">Completed</label>
+          <input type="date" id="research_completion_date" name="research_date" {% if sectionB_1[6] !=none
+            %}value="{{sectionB_1[6]}}" {% endif %} disabled>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+
+
+          <label for="pg_conference">Lincoln University PG conference presentation</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="pg_conference_uncompleted" name="pg_conference" value="uncompleted" {% if
+            sectionB_1[7]==none %}checked{% endif %} disabled>
+          <label for="pg_conference_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="pg_conference_completed" name="pg_conference" value="completed" {% if sectionB_1[7]
+            !=none %}checked{% endif %} disabled>
+          <label for="pg_conference_completed">Completed</label>
+          <input type="date" id="pg_conference_completion_date" name="pg_date" {% if sectionB_1[7] !=none
+            %}value="{{sectionB_1[7]}}" {% endif %} disabled>
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+
+          <label for="thesis_results">Thesis Results Seminar (Strongly recommended)</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" id="thesis_results_uncompleted" name="thesis_results" value="uncompleted" {% if
+            sectionB_1[8]==none %}checked{% endif %} disabled>
+          <label for="thesis_results_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+          <input type="radio" id="thesis_results_completed" name="thesis_results" value="completed" {% if sectionB_1[8]
+            !=none %}checked{% endif %} disabled>
+          <label for="thesis_results_completed">Completed</label>
+          <input type="date" id="thesis_results_completion_date" name="thesis_results_date" {% if sectionB_1[8] !=none
+            %}value="{{sectionB_1[8]}}" {% endif %} disabled>
+        </div>
+      </div>
+    </div>
+
+
+    {% else %}
+    <h3 class="no-record">Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+    <h4>Discuss with your supervisor(s) whether or not your research has been or will need to be approved by any of the
+      Lincoln University Committees listed below and tick the appropriate box.</h4>
+    {% if sectionB_2 %}
+
+    <div class="sectionB_part2">
+      <div class="row">
+        <div class="col-sm-5">
+          <label>Human Ethics Committee</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[1]=="needed" %}checked{% endif %} disabled>
+          <label>Needed</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" {% if sectionB_2[1]=="approval given" %}checked {% endif %} disabled>
+          <label>Approval Given</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[1]=="not needed" %}checked{% endif %} disabled>
+          <label>Not Needed</label>
+        </div>
+      </div>
+
+      <br>
+      <div class="row">
+        <div class="col-sm-5">
+          <label>Health and Safety Committee</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[2]=="needed" %}checked{% endif %} disabled>
+          <label>Needed</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" {% if sectionB_2[2]=="approval given" %}checked{% endif %} disabled>
+          <label>Approval Given</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[2]=="not needed" %}checked{% endif %} disabled>
+          <label>Not Needed</label>
+        </div>
+      </div>
+
+      <br>
+      <div class="row">
+        <div class="col-sm-5">
+          <label>Animal Ethics Committee</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[3]=="needed" %}checked{% endif %} disabled>
+          <label>Needed</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" {% if sectionB_2[3]=="approval given" %}checked{% endif %} disabled>
+          <label>Approval Given</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[3]=="not needed" %}checked{% endif %} disabled>
+          <label>Not Needed</label>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-5">
+          <label>Institutional Biological Safety Committee</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[4]=="needed" %}checked{% endif %} disabled>
+          <label>Needed</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" {% if sectionB_2[4]=="approval given" %}checked{% endif %} disabled>
+          <label>Approval Given</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[4]=="not needed" %}checked{% endif %} disabled>
+          <label>Not Needed</label>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-5">
+          <label>Radiation Protection Officer</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[5]=="needed" %}checked{% endif %} disabled>
+          <label>Needed</label>
+        </div>
+        <div class="col-sm-3">
+          <input type="radio" {% if sectionB_2[5]=="approval given" %}checked{% endif %} disabled>
+          <label>Approval Given</label>
+        </div>
+        <div class="col-sm-2">
+          <input type="radio" {% if sectionB_2[5]=="not needed" %}checked{% endif %} disabled>
+          <label>Not Needed</label>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <h3 class="no-record">Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+    <h4>Given that you are being managed to submit your PhD within 3 years of registering then please tick the
+      appropriate reporting box in the table below:</h4>
+    <div class="table_row">
+      <table class="table table-hover">
+        <tr>
+          <th>Time from start</th>
+          <th>Report Term</th>
+          <th>Mile-stone</th>
+        </tr>
+        <tr>
+          <td>6 Months</td>
+          <td>
+            <input type="radio" {% if term=='1st' %} checked {% endif %} disabled>
+            <label>1st 6-Month</label>
+          </td>
+          <td>Proposal submitted and seminar held</td>
+        </tr>
+        <tr>
+          <td>12 Months</td>
+          <td>
+            <input type="radio" {% if term=='2nd' %} checked {% endif %} disabled>
+            <label>2nd 6-Month</label>
+          </td>
+          <td>Proposal approved; Data collection started</td>
+        </tr>
+        <tr>
+          <td>18 Months</td>
+          <td>
+            <input type="radio" {% if term=='3rd' %} checked {% endif %} disabled>
+            <label>3rd 6-Month</label>
+          </td>
+          <td>Mid term PhD progress evaluation</td>
+        </tr>
+        <tr>
+          <td>24 Months</td>
+          <td>
+            <input type="radio" {% if term=='4th' %} checked {% endif %} disabled>
+            <label>4th 6-Month</label>
+          </td>
+          <td>Data collected; Analysis and writing begun</td>
+        </tr>
+        <tr>
+          <td>30 Months</td>
+          <td>
+            <input type="radio" {% if term=='5th' %} checked {% endif %} disabled>
+            <label>5th 6-Month</label>
+          </td>
+          <td>Analysis done; Half thesis written</td>
+        </tr>
+        <tr>
+          <td>3 years</td>
+          <td>
+            <input type="radio" {% if term=='6th' %} checked {% endif %} disabled>
+            <label>6th 6-Month</label>
+          </td>
+          <td>Thesis submitted for examination; Research seminar held</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+</main>
+<style>
+  td,
+  th {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    display: table;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .table {
+    display: table;
+  }
+
+  .card {
+    border-top: none;
+    border-radius: 0;
+  }
+
+  .employ-form input[type="text"] {
+    width: 80%;
+  }
+
+  .row .col-sm-5 label {
+    color: #999;
+  }
+
+
+  .sectionB_part1,
+  .sectionB_part2 {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  h4 {
+    padding-top: 20px;
+  }
+</style>
+
+{% if routing == 'check-supervisors' %}
+<script>
+  function showMessage() {
+    alert('WARNING! You are exiting the report before checking all sections!');
+  }
+</script>
+{% endif %}
+
+
+
+
+{% endblock %}

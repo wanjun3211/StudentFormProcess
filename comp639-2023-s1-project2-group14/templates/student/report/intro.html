@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+    <!-- For form submission after Section D-->
+    {% if message %}
+
+    {% if alertStyling == "Red" %}
+    <div class="alert alert-danger" role="alert">
+    {% elif alertStyling == "Green" %}
+    <div class="alert alert-success" role="alert">
+        {% elif alertStyling == "Yellow" %}
+    <div class="alert alert-warning" role="alert">
+    {% else %}
+    <div>
+    {% endif %}
+        <p>{{message}}</p>
+    </div>
+{% endif %}
+        <div class="card">
+    <h4 class="faculty">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h5>This form, for thesis students and their supervisors only, is to be completed in June and December each year.</h5>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="#collapse1"><i class="fa-solid fa-circle-arrow-right"></i>Instruction Of Report (Click to view details)</a>
+        </h4>
+      </div>
+      <div id="collapse1" class="panel-collapse collapse">
+        <div class="panel-body">
+
+           <h3>Instructions:</h3>
+            <ul class="report_intro">
+        <li>Lincoln University requires all PhD students and their supervisors to complete this report form twice a year.</li>
+        <li>Sections A, B, and C – to be completed by the student and then discussed with supervisor.</li>
+        <li>Section D – to be completed by the student after discussion with the supervisor.</li>
+        <li>Section E – Supervisors to complete.</li>
+        <li>Section F (optional) – Students can complete if they wish to.</li>
+        <li>Recommendation: Students should complete sections A, B, C, and save a copy for reference at the next review. Email a copy to your supervisors, and meet your supervisors to complete Section D, then leave the form with supervisor to complete Section E.</li>
+        <li>Complete Section F if you wish to.</li>
+    </ul>
+
+    <h3>Purpose:</h3>
+    <p>This form has been prepared to assist in:</p>
+    <ul class="report_intro">
+        <li>Coordinating student/supervisor expectations</li>
+        <li>Improving supervision through the encouragement of ‘best practice’</li>
+        <li>Improving documentation</li>
+        <li>Identifying issues at an early stage</li>
+        <li>Alerting Faculties and the Postgraduate Office to resource and related problems</li>
+    </ul>
+    <p>In some circumstances, students may wish to discuss issues with the:</p>
+    <ul class="report_intro">
+        <li>ESD Faculty Postgraduate Chair, Associate Professor Patricia Anthony<br>Room Landscape 032. Email:
+            <a href="mailto:patricia.anthony@lincoln.ac.nz">patricia.anthony@lincoln.ac.nz</a></li>
+        <p><b>or with</b></p>
+        <li> Lincoln University Postgraduate Director, Dr Andrew Holyoake<br>Room Forbes 316. Email:
+            <a href="mailto:andrew.holyoake@lincoln.ac.nz">andrew.holyoake@lincoln.ac.nz</a></li>
+    </ul>
+
+    <p>Sections D and E of this form are intended to be confidential. However, under the Official Information Act 1982
+        any records held by the University in relation to staff or students are accessible by those staff or students
+        and, on many occasions, by the general public. <br><br>
+
+        Therefore, postgraduates may prefer initially to discuss problems with one or more of the people named above, rather than committing their concerns about colleagues, supervisors,
+        etc., to writing. It will, of course, often be impossible for the Faculty Postgraduate Chair to take action on
+        supervision and other problems without revealing details of the concern and the students involved.</p>
+
+
+    <ul class="report_intro">
+    <li>Upon completion, <b>Sections A, B, C, D, and E </b> should be sent to the <b>Faculty Postgraduate Administrator:
+        Douglas Broughton, Landscape 124. Email:<a href="mailto:douglas.broughton@lincoln.ac.nz">douglas.broughton@lincoln.ac.nz</a></b></li>
+
+    <li>Students who complete Section F should send it to:
+        <ul class="report_intro">
+        <li>the Faculty Postgraduate Chair: <b>Patricia Anthony, Landscape 032,
+          <a href="mailto:patricia.anthony@lincoln.ac.nz">patricia.anthony@lincoln.ac.nz</a></b></li>
+        <li>Or the Postgraduate Director: <b>Andrew Holyoake, Forbes 316,
+          <a href="mailto:andrew.holyoake@lincoln.ac.nz">andrew.holyoake@lincoln.ac.nz</a></b></li>
+            </li>
+        </ul>
+    </ul>
+
+        </div>
+      </div>
+    </div>
+
+    <form action="/student/report/intro" method="POST">
+        {% if report_progress %}
+            {% for report in report_progress %}
+
+            {% if report[2] == 6 %}
+                {% if report[1] == '6th' %}
+                    <h4 class="report-note">Congratulations, you completed your all report.</h4>
+                {% else %}
+                    {% if report[5] == 'ontime' %}
+                            <h4 class="report-note">Congratulations, your current report is now complete.You can view your reports from the history report page.</h4>
+                    {% else %}
+                        <input type="hidden" name="report" value="{{report[6]}}">
+                        <div class="update-button">
+                            <h4 class="report-note">You can start filling in a new report:</h4>
+                            <button class="btn btn-right" type="submit" name="sectionA">Start A New Report</button>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <input type="hidden" name="report" value="{{report[1]}}">
+                <div class="update-button">
+                    {% if report[5] == 'overdue' %}
+                        <h4 style="color:red">Your current report is overdue, please complete it as soon as possible.</h4>
+                    {% else %}
+                        <h4 class="report-note">Please continue your unfinished report:</h4>
+                    {% endif %}
+                    <button class="btn btn-right" type="submit" name="sectionA">View your Report</button>
+                </div>
+                <div class="report">
+                    <p>Current report details:</p>
+                    <table class="table table-hover">
+                    <tbody class="tbody">
+                    <tr>
+                   <td><strong>Report Term</strong></td>
+                        <td>{{report[1]}} 6-Month</td>
+                     </tr>
+                <tr>
+                <td><strong>Mile-stone</strong></td>
+                {% if report[1] == '1st' %}
+                <td>Proposal submitted and seminar held</td>
+                {% elif report[1] == '2nd' %}
+                <td>Proposal approved; Data collection started</td>
+                {% elif report[1] == '3rd' %}
+                <td>Mid term PhD progress evaluation</td>
+                {% elif report[1] == '4th' %}
+                <td>Data collected; Analysis  and writing begun</td>
+                {% elif report[1] == '5th' %}
+                <td>Analysis done; Half thesis written</td>
+                {% elif report[1] == '6th' %}
+                <td>Thesis submitted for examination; Research seminar held</td>
+                {% endif %}
+            </tr>
+             <tr>
+                 <td><strong>Due Date</strong></td>
+                <td>{{report[4]}}</td>
+            </tr>
+            <tr>
+                <td><strong>Status</strong></td>
+                <td>
+                    {% if report[2] != 6 %}
+                        <p class="progress_undone">In Progress</p>
+                            {% if report[3] == '1900-01-01' %}
+                            <small class="progress_undone">The report didn't fill anything.</small>
+                            {% else %}
+                            <small class="progress_undone">Last Update Time: {{ report[3] }}</small>
+                            {% endif %}
+                    {% else %}
+                         <p class="progress_done">Done!</p>
+                            <small class="progress_done">Last Update Time: {{ report[3] }}</small>
+                    {% endif %}
+                </td>
+            </tr>
+          </tbody>
+            </table>
+                </div>
+            {% endif %}
+
+          {% endfor %}
+        {% else %}
+        <h4 class="report-note">You can start your first report:</h4>
+        <div class="update-button">
+           <input type="hidden" name="report" value="1st">
+            <button class="btn btn-right" type="submit" name="sectionA">Start A New Report</button>
+        </div>
+        {% endif %}
+     </form>
+ </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+<style>
+
+table td {
+  padding: 10px;
+  line-height: 2;
+}
+
+.fa-circle-arrow-right{
+margin-right:10px;
+}
+
+.table>tbody>tr>td{
+  border: 1px solid #eef1f2;
+  padding-right:30px;
+  padding-left:30px;
+}
+
+  .table{
+    overflow-x: hidden;
+    overflow-y: hidden;
+
+  }
+
+.report{
+ margin-top:20px;
+}
+
+.report-note{
+margin-bottom:20px;
+}
+
+.update-button{
+display:flex;
+}
+
+.btn-right{
+height:35px;
+margin-left:20px;
+}
+</style>
+
+
+{% endblock %}

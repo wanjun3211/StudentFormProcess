@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    <h3 class="list-title">Students List</h3>
+    <!-- List view -->
+    {% if message %}
+    {% if alertStyling == "Red" %}
+    <div class="alert alert-danger" role="alert">
+        {% elif alertStyling == "Green" %}
+        <div class="alert alert-success" role="alert">
+            {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+                {% else %}
+                <div>
+                    {% endif %}
+
+                    {{message}}</div>
+                {% endif %}
+                <div class="card">
+                    <div class="row">
+
+                        <form action="/chair/students" method="POST" onsubmit="return validateSearch1()">
+                            <div class="title-line">
+                                <label for="inputGroupSelect">Department:</label>
+                                <select class="custom-select" id="inputGroupSelect" name="inputGroupSelect">
+                                    <option value="">--Choose a department--:</option>
+                                    <option value="ALL" {% if sort_depart=='ALL' %} selected {% endif %}>All</option>
+                                    <option value="DEM" {% if sort_depart=='DEM' %} selected {% endif %}>DEM</option>
+                                    <option value="DTSS" {% if sort_depart=='DTSS' %} selected {% endif %}>DTSS</option>
+                                    <option value="SOLA" {% if sort_depart=='SOLA' %} selected {% endif %}>SOLA</option>
+                                </select>
+                                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                            </div>
+                        </form>
+                        <!-- Search section -->
+                        <div class="title-line">
+                            <form method="POST" onsubmit="return validateSearch()">
+                                <input type="text" id="search" name="search" placeholder="Student Name...">
+                                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                        <!-- sort by report progress -->
+                        <div class="title-line">
+                            <form method="POST" action="/chair/filter_report_progress"
+                                onsubmit="return validateSearch2()">
+                                <label for="report_progress"> Report porgress:</label>
+                                <select class="custom-select" style='width:170px' name="report_progress"
+                                    id="report_progress">
+                                    <option value="">--Choose a report progress--:</option>
+                                    <option value=1 {% if sort_re_progress=='1' %} selected {% endif %}>on
+                                        going(student)</option>
+                                    <option value=2 {% if sort_re_progress=='2' %} selected {% endif %}>on
+                                        going(supervisor)</option>
+                                    <option value=3 {% if sort_re_progress=='3' %} selected {% endif %}>convenor to
+                                        grade</option>
+                                    <option value=4 {% if sort_re_progress=='4' %} selected {% endif %}>chair</option>
+                                    <option value=5 {% if sort_re_progress=='5' %} selected {% endif %}>on going(admin)
+                                    </option>
+                                    <option value=6 {% if sort_re_progress=='6' %} selected {% endif %}>completed
+                                    </option>
+                                    <option value=None {% if sort_re_progress=='None' %} selected {% endif %}>not
+                                        started</option>
+                                </select>
+                                <button class="btn" type="submit" value="Submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+
+                        <a href="/chair/students" id="reset">
+                            <button class="btn" type="submit">RESET</button>
+                        </a>
+                    </div>
+                    <div>
+                        {% if select_result %}
+                        <p>Note:</p>
+                        <p class="table-note">- DEM: Department of Environmental Management. DTSS: Department of
+                            Tourism, Sport and Society. SOLA: School of Landscape Architecture </p>
+                    </div>
+
+                    <div class="table_row">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Email Address</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Supervisors</th>
+                                    <th scope="col">Profile</th>
+                                    <!-- new column added by wanjun wang for chair report function -->
+                                    <th scope="col">Report Progress</th>
+                                    <th scope="col">Term</th>
+                                    <th scope="col">Due Date</th>
+                                </tr>
+                            </thead>
+                            <!-- new column contents added and revised by wanjun wang for chair report function -->
+                            {% for students in select_result %}
+                            <tbody>
+                                <tr>
+                                    <td>{{students[0]}}</td>
+                                    <td>{{students[1]}}</td>
+                                    {% if students[2] =='DEM' %}
+                                    <td><span class="depart dem">DEM</span></td>
+                                    {% elif students[2]=='DTSS' %}
+                                    <td><span class="depart dtss">DTSS</span></td>
+                                    {% elif students[2]=='SOLA' %}
+                                    <td><span class="depart sola">SOLA</span></td>
+                                    {% endif %}
+                                    <td>{{students[3]}}</td>
+                                    <td>{{students[4]}}</td>
+                                    <td>{{students[5]}}</td>
+
+                                    <td>
+                                        <form method="POST" action="/chair/student_detail">
+                                            <input type="hidden" name="ID" value="{{students[0]}}">
+                                            <button class="btn-update" type="submit"><i class="fa-solid fa-eye"></i>View
+                                                Detail</button>
+                                        </form>
+                                    </td>
+
+                                    {% if students[7]==1 %}
+                                    <td>
+                                        on going(student)
+                                    </td>
+                                    {% elif students[7]==2 %}
+                                    <td>
+                                        on going(supervisor)
+                                    </td>
+                                    {% elif students[7]==3 %}
+                                    <td>
+                                        convenor to grade
+                                    </td>
+                                    {% elif students[7]==4 %}
+                                    <td>
+                                        chair
+                                    </td>
+                                    {% elif students[7]==5 %}
+                                    <td>
+                                        on going(admin)
+                                    </td>
+                                    {% elif students[7]==6 %}
+                                    <td>
+                                        completed
+                                    </td>
+                                    {% else %}
+                                    <td>not started </td>
+                                    {% endif %}
+                                    <td>{{students[8]}}</td>
+                                    <td>{{students[9]}}</td>
+
+                                </tr>
+                            </tbody>
+                            {% endfor %}
+                        </table>
+                        {% if pagination_exist=='Yes' %}
+                        <div class="pagination">
+                            {{ pagination.links }}
+                        </div>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+</main>
+
+<script>
+
+
+
+    function validateSearch() {
+        var searchInput = document.getElementById("search").value;
+        if (searchInput == "") {
+            alert("Sorry,you have not entered any search terms, please re-enter it.");
+            return false;
+        }
+        return true;
+    }
+
+
+    function validateSearch1() {
+        var searchInput = document.getElementById("inputGroupSelect").value;
+        if (searchInput == "") {
+            alert("Sorry,you have not selected any item, please try a again.");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    function validateSearch2() {
+        var searchInput = document.getElementById("report_progress").value;
+        if (searchInput == "") {
+            alert("Sorry,you have not selected items, please re-select it.");
+            return false;
+        }
+        return true;
+    }
+
+
+    const input1 = document.getElementById('search');
+    const select1 = document.getElementById('inputGroupSelect');
+    const select2 = document.getElementById('report_progress');
+
+    input1.addEventListener('input', () => {
+        if (input1.value.length > 0) {
+            select1.disabled = true;
+            select2.disabled = true;
+        } else {
+            select1.disabled = false;
+            select2.disabled = false;
+        }
+    });
+
+    select1.addEventListener('change', () => {
+        if (select1.value.length > 0) {
+            input1.disabled = true;
+            select2.disabled = true;
+        } else {
+            input1.disabled = false;
+            select2.disabled = false;
+        }
+    });
+
+    select2.addEventListener('change', () => {
+        if (select2.value.length > 0) {
+            input1.disabled = true;
+            select1.disabled = true;
+        } else {
+            input1.disabled = false;
+            select1.disabled = false;
+        }
+    });
+
+
+
+</script>
+
+<style>
+    .title-line select {
+        width: 150px;
+        padding: 5px 10px;
+        height: 35px;
+    }
+
+    a i,
+    button i {
+        margin-right: 5px;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #38998F;
+    }
+</style>
+
+{% endblock %}

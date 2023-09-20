@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="image-container"></div>
+<div class="signup-container">
+    <div class="signup-back-button">
+        <a href ="login" id="login">
+            <button type="button" class="btn">Back to Login</button>
+        </a>
+    </div>
+    <div class="signup-message">
+        <!-- Display Message -->
+        {% if message %}
+        
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+                <p >{{message}}</p>
+            </div>
+        {% endif %}
+    </div>
+    <div class="signup-label">
+        <h1>Sign Up</h1>
+    </div>
+    <div class="signup-content">
+        <form method="POST" action="/signup">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+            {{ form.first_name.label }}
+            {{ form.first_name() }}
+            </div>
+            <div class="form-group">
+            {{ form.last_name.label }}
+            {{ form.last_name() }}
+            </div>
+            <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email() }}
+            {% if form.is_submitted() %}
+                {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+                {% endif %}
+            {% endif %}
+            </div>
+            <div class="form-group">
+            {{ form.password.label }}
+            {{ form.password() }}
+            {% if form.is_submitted() %}
+                {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+                {% endif %}
+            {% endif %}
+            </div>
+            <div class="form-group">
+            {{ form.confirm_password.label }}
+            {{ form.confirm_password() }}
+            {% if form.is_submitted() %}
+                {% if form.confirm_password.errors %}
+                {% for error in form.confirm_password.errors %}
+                    <span class="text-danger">{{error}}</span>
+                {% endfor %}
+                {% endif %}
+            {% endif %}
+    
+            </div>
+            <div class="form-group">
+                {{form.main_supervisor.label}}
+                {{form.main_supervisor()}}
+            </div>
+            <div class="form-group">
+            {{ form.submit() }}
+            </div>
+        </form>
+    </div>
+    
+</div>
+
+{% endblock %}

@@ -1,0 +1,299 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+
+    <h3 class="list-title">Task List</h3>
+    <!-- List view -->
+    {% if message %}
+    {% if alertStyling == "Red" %}
+    <div class="alert alert-danger" role="alert">
+        {% elif alertStyling == "Green" %}
+        <div class="alert alert-success" role="alert">
+            {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+                {% else %}
+                <div>
+                    {% endif %}
+
+                    {{message}}</div>
+                {% endif %}
+
+                <!-- no taks need to grade reminder -->
+                {% if no_task_message %}
+                {% if alertStyling_1 == "Red" %}
+                <div class="alert alert-danger" role="alert">
+                    {% elif alertStyling_1 == "Green" %}
+                    <div class="alert alert-success" role="alert">
+                        {% elif alertStyling_1 == "Yellow" %}
+                        <div class="alert alert-warning" role="alert">
+                            {% else %}
+                            <div>
+                                {% endif %}
+
+                                {{no_task_message}}</div>
+                            {% endif %}
+
+                            <div class="card">
+                                <div class="row">
+
+                                    <!-- Search section -->
+                                    <div class="title-line">
+                                        <form method="POST" action="/chair/filter_task"
+                                            onsubmit="return validateSearch()">
+                                            <input type="text" id="search" name="search" placeholder="student name">
+                                            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+                                        </form>
+                                    </div>
+
+                                    <div class="title-line">
+                                        <form method="POST" action="/chair/filter_task"
+                                            onsubmit="return validateSearch1()">
+                                            <label for="task_classfi"> Task:</label>
+                                            <select class="custom-select" style='width:170px' name="task_classfi"
+                                                id="task_classfi">
+                                                <option value="">--choose a task--</option>
+                                                <option value=1 {% if sort_task=='1' %} selected {% endif %}>Grade
+                                                    Section E</option>
+                                                <option value=2 {% if sort_task=='2' %} selected {% endif %}>Act on
+                                                    SectionF</option>
+                                            </select>
+                                            <button class="btn" type="submit" value="Submit"><i
+                                                    class="fa fa-search"></i></button>
+                                        </form>
+                                    </div>
+
+                                    <a href="/chair/grade/task" id="reset">
+                                        <button class="btn" type="submit">RESET</button>
+                                    </a>
+
+                                </div>
+
+                                {% if select_result1 or select_result2 %}
+                                <div>
+
+                                    <p>Note:</p>
+                                    <p class="table-note">-DEM: Department of Environmental Management. DTSS: Department
+                                        of
+                                        Tourism, Sport and Society. SOLA: School of Landscape Architecture </p>
+                                </div>
+
+                                <div class="table_row">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Full Name</th>
+                                                <th scope="col">Phone</th>
+                                                <th scope="col">Email Address</th>
+                                                <th scope="col">Profile Detail</th>
+                                                <th scope="col">Report ID</th>
+                                                <th scope="col">Report Progress</th>
+                                                <th scope="col">Reprot Term</th>
+                                                <th scope="col">Report Due Date</th>
+                                                <th scope="col">Task</th>
+                                            </tr>
+                                        </thead>
+                                        {% endif %}
+                                        {% if select_result1 %}
+
+                                        {% for students in select_result1 %}
+                                        <tbody>
+                                            <tr>
+                                                <td>{{students[0]}}</td>
+                                                <td>{{students[1]}}</td>
+                                                <td>{{students[2]}}</td>
+                                                <td>{{students[3]}}</td>
+                                                <td>
+                                                    <form method="POST" action="/chair/student_detail">
+                                                        <input type="hidden" name="ID" value="{{students[0]}}">
+                                                        <input type="hidden" name="Return_to_grade"
+                                                            value=return_to_grade>
+                                                        <button class="btn-update" type="submit"><i
+                                                                class="fa-solid fa-eye"></i>View Detail</button>
+                                                    </form>
+                                                </td>
+                                                <td>{{students[4]}}</td>
+
+                                                {% if students[5]==1 %}
+                                                <td> on going(student)</td>
+
+                                                {% elif students[5]==2 %}
+                                                <td> on going(supervisor)</td>
+
+                                                {% elif students[5]==3 %}
+                                                <td> convenor to grade</td>
+
+                                                {% elif students[5]==4 %}
+                                                <td> chair </td>
+
+                                                {% elif students[5]==5 %}
+                                                <td> on going(admin)</td>
+
+                                                {% elif students[5]==6 %}
+                                                <td>completed</td>
+
+                                                {% else %}
+                                                <td>not started </td>
+
+                                                {% endif %}
+                                                <td>{{students[6]}}</td>
+                                                <td>{{students[7]}}</td>
+
+
+                                                <td>
+                                                    <a href="/view_report/sectionA?report_id={{students[4]}}&term={{students[6]}}&routing=11"
+                                                        class="btn-update" name="view_report"><i
+                                                            class="fa-solid fa-pen-to-square"></i> Grade Section E
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                        {% endfor %}
+
+                                        {% endif %}
+
+
+                                        {% if select_result2 %}
+
+                                        {% for students in select_result2 %}
+                                        <tbody>
+                                            <tr>
+                                                <td>{{students[0]}}</td>
+                                                <td>{{students[1]}}</td>
+                                                <td>{{students[2]}}</td>
+                                                <td>{{students[3]}}</td>
+                                                <td>
+                                                    <form method="POST" action="/chair/student_detail">
+                                                        <input type="hidden" name="ID" value="{{students[0]}}">
+                                                        <input type="hidden" name="Return_to_grade"
+                                                            value=return_to_grade>
+                                                        <button class="btn-update" type="submit"><i
+                                                                class="fa-solid fa-eye"></i>View Detail</button>
+                                                    </form>
+                                                </td>
+                                                <td>{{students[4]}}</td>
+
+                                                {% if students[5]==1 %}
+                                                <td> on going(student)</td>
+
+                                                {% elif students[5]==2 %}
+                                                <td> on going(supervisor)</td>
+
+                                                {% elif students[5]==3 %}
+                                                <td> convenor to grade</td>
+
+                                                {% elif students[5]==4 %}
+                                                <td> chair </td>
+
+                                                {% elif students[5]==5 %}
+                                                <td> on going(admin)</td>
+
+                                                {% elif students[5]==6 %}
+                                                <td>completed</td>
+
+                                                {% else %}
+                                                <td>not started </td>
+
+                                                {% endif %}
+
+                                                <td>{{students[6]}}</td>
+                                                <td>{{students[7]}}</td>
+
+                                                <td>
+                                                    <a href="/view_report/sectionA?report_id={{students[4]}}&term={{students[6]}}&routing=14"
+                                                        class="btn-update" name="view_report"> <i
+                                                            class="fa-solid fa-pen-to-square"></i>Act on SectionF
+                                                </td>
+
+                                            </tr>
+                                        </tbody>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+</main>
+
+<script>
+
+    function confirmDelete(values) {
+        const [student_id, fullname] = values.split(',');
+        // Prompt the user to confirm the deletion
+        var result = confirm(`Are you sure you want to delete ${fullname}?`);
+        result = confirm(`This is the final warning. All data will be erase for ${fullname} `)
+
+        // If the user clicked "OK", return true
+        if (result == true) {
+            window.location.href = "/admin/delete_student?student_id=" + student_id;
+        }
+
+        // Otherwise, return false
+        return false;
+    }
+
+    function validateSearch1() {
+        var searchInput = document.getElementById("task_classfi").value;
+        if (searchInput == "") {
+            alert("Sorry,you have not select a task category yet, please try a again.");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    function validateSearch() {
+        var searchInput = document.getElementById("search").value;
+        if (searchInput == "") {
+            alert("Sorry,you have not entered any search terms, please re-enter it.");
+            return false;
+        }
+        return true;
+    }
+
+
+
+    const input = document.getElementById('search');
+    const select = document.getElementById('task_classfi');
+
+    input.addEventListener('input', () => {
+        if (input.value.length > 0) {
+            select.disabled = true;
+        } else {
+            select.disabled = false;
+        }
+    });
+
+    select.addEventListener('change', () => {
+        if (select.value.length > 0) {
+            input.disabled = true;
+        } else {
+            input.disabled = false;
+        }
+    });
+
+
+</script>
+
+<style>
+    .title-line select {
+        width: 150px;
+        padding: 5px 10px;
+        height: 35px;
+    }
+
+    a i,
+    button i {
+        margin-right: 5px;
+    }
+</style>
+
+{% endblock %}

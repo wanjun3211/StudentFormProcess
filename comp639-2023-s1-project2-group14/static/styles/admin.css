@@ -1,0 +1,247 @@
+
+.row{
+display:flex;
+align-items: center;
+justify-content: space-between;
+}
+
+
+.table {
+  display: block;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: hidden; /* Add this line to hide the vertical scroll bar */
+  white-space: nowrap;
+  line-height: 2;
+}
+
+.table::-webkit-scrollbar {
+  width: 10px;
+}
+
+.table::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.table::-webkit-scrollbar-thumb {
+  background-color: #CCCCCC;
+}
+
+.table::-webkit-scrollbar-thumb:hover {
+  background-color: #009999;
+}
+
+th,td{ 
+    white-space: nowrap;
+}
+
+.table td{
+    padding:15px;
+}
+
+th{
+  background-color: #38998F;
+  color: white;
+}
+
+.card{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background-color: white;
+    background-clip: border-box;
+    border: none;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.custom-select{
+    width:100px;
+}
+
+.btn-right{
+margin-left:5px;
+}
+
+.list-title{
+text-align: center;
+margin-bottom:4rem;
+}
+
+.btn-update {
+    color:#38998F;
+    border: 1px solid #38998F;
+    padding:5px 10px;
+    text-align: center;
+    background:white;
+    border-radius: 5px;
+}
+
+.btn-delete{
+    color:#fc424a;
+    border: 1px solid #fc424a;
+    padding:5px 10px;
+    text-align: center;
+    background:white;
+    border-radius: 5px;
+}
+
+.btn-update:hover {
+  background-color: #38998F;
+  color: white;
+  text-decoration: none;
+}
+
+.btn-delete:hover {
+  background-color: #fc424a;
+  color: white;
+  text-decoration: none;
+}
+
+
+  .form-add {
+    justify-content: center;
+    align-items: center;
+    display:flex;
+  }
+
+  .form-context {
+    width:50%;
+  }
+
+  .info-title{
+    margin:3rem 2rem;
+    text-align:center;
+  }
+
+  h5{
+   text-align:center;
+   margin-bottom:3rem;
+  }
+
+  .table-note{
+  font-size:12px;
+  }
+
+.title-line input[type="text"]{
+     padding:3px 10px;
+}
+
+.registrations-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* .filter-registrations {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  } */
+  
+  #search-registrations {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding:20px;
+  }
+
+  #submit-checkbox {
+    color:white;
+    font-weight: bold;
+    margin:20px;
+  }
+
+  #submit-checkbox:hover {
+    color:#1ccf00;
+  }
+
+  #reject-checkbox {
+    color:#4c0000;
+    font-weight: bold;
+    margin:20px;
+  }
+
+  #reject-checkbox:hover {
+    color:#cc0000;
+  }
+
+  /* For student_detail.html's pop up windows */
+ #overlay{
+    display:none;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    /* z-index:1; */
+    background-color:rgbs(0,0,0,0.5);
+
+ }
+
+ #modal{
+    max-width: 600px;
+    height:300px;
+    margin:auto;
+    background-color: white;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+ }
+
+ #overlay2{
+    display:none;
+    position:fixed;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    /* z-index:1; */
+    background-color:rgbs(0,0,0,0.5);
+
+ }
+
+  #modal2{
+    max-width: 600px;
+    height:300px;
+    margin:auto;
+    background-color: white;
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+ }
+
+ td .depart {
+   display: inline-block;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    line-height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.5rem;
+    }
+
+.dem {
+    color: #212529;
+    background-color: #fed269;
+}
+.sola {
+    color: #fff;
+    background-color: #336699;
+}
+
+.dtss{
+    color: #fff;
+    background-color: #06d6a0;
+}
+
+.breadcrumb{
+background:none;
+}

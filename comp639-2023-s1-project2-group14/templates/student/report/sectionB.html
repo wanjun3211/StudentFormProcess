@@ -1,0 +1,413 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+    {% if message %}
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+
+            {{message}}</div>
+        {% endif %}
+      <ul class="nav nav-tabs">
+            <li><a href="/student/report/intro" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Report Intro</a></li>
+            <li {% if section =='sectionA' %} class="active" {% endif %} ><a href="/student/report/sectionA?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section A</a></li>
+            <li {% if section =='sectionB' %} class="active" {% endif %}><a href="/student/report/sectionB?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section B</a></li>
+            <li {% if section =='sectionC' %} class="active" {% endif %}><a href="/student/report/sectionC?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section C</a></li>
+            <li {% if section =='sectionD' %} class="active" {% endif %}><a href="/student/report/sectionD?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section D</a></li>
+            <li {% if section =='sectionF' %} class="active" {% endif %}><a href="/student/report/sectionF?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section F</a></li>
+          </ul>
+
+<div class="card">
+      <!-- Warning bar for each section -->
+  {% if progress_id > 1 and progress_id < 6%}
+
+  <div class="alert alert-danger" role="alert"> You cannot edit this page as it is currently being processed by
+    {% if progress_id == 2 %}
+    supervisor
+    {%elif progress_id == 3%}
+    Convenor
+    {% elif progress_id == 5%}
+    admin
+    {% endif%}
+  </div>
+
+  {% endif %}
+
+  {% if progress_id == 6 %}
+  <div class="alert alert-warning" role="alert">The report is completed and this cannot be edited</div>
+  {% endif %}
+
+    <!-- Progress bar for each section -->
+    {% if progress_id != 1 %}
+     <h4>Report Finished Role:</h4>
+    {% if progress_id == 2 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+    {% elif progress_id == 3 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+    {% elif progress_id == 5 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+    {% elif progress_id == 6 %}
+        <span>Congratulations, this report has been completed.</span>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Admin</div>
+    {% endif %}
+        </div>
+        {% endif %}
+
+    <h4 class="faculty">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h3 class="section-title">Section B – Milestones</h3>
+    <h4>Selete “not completed” box where applicable or give date of completion where appropriate in the related box.</h4>
+  <form method="POST" action="/student/report/sectionB" onsubmit="return validateForm()">
+      <div class="sectionB_part1">
+          <div class="row">
+              <div class="col-sm-5">
+                <label for="induction_program">Induction Programme (Compulsory)</label>
+              </div>
+              <div class="col-sm-3">
+                <input type="radio" id="induction_uncompleted" name="induction_study" value="uncompleted" {% if sectionB_1 %} {% if sectionB_1[1] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+                <label for="induction_uncompleted">Not Completed</label>
+              </div>
+              <div class="col-sm-4">
+                <input type="radio" id="induction_completed" name="induction_study" value="completed" {% if sectionB_1 %} {% if sectionB_1[1] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+                <label for="induction_completed">Completed</label>
+                <input type="date" id="induction_completion_date" name="induction_date" {% if sectionB_1 %} {% if sectionB_1[1] != none %}value="{{sectionB_1[1]}}"{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} ><br>
+              </div>
+          </div>
+
+    <div class="row">
+      <div class="col-sm-5">
+    <label for="mutual_expectations">Mutual Expectations Agreement (Compulsory)</label>
+      </div>
+      <div class="col-sm-3">
+
+    <input type="radio" id="mutual_uncompleted" name="mutual_study" value="uncompleted" {% if sectionB_1 %} {% if  sectionB_1[2] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="mutual_uncompleted">Not Completed</label>
+         </div>
+        <div class="col-sm-4">
+    <input type="radio" id="mutual_completed" name="mutual_study" value="completed"{% if sectionB_1 %} {% if  sectionB_1[2] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="mutual_completed">Completed</label>
+    <input type="date" id="mutual_completion_date" name="mutual_date" {% if sectionB_1 %} {% if  sectionB_1[2] != none %}value= "{{sectionB_1[2]}}" {% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %}><br>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+    <label for="MEA">Kaupapa Māori Research MEA (Compulsory if relevant)</label>
+        </div>
+      <div class="col-sm-3">
+    <input type="radio" id="MEA_uncompleted" name="MEA_study" value="uncompleted" {% if sectionB_1 %} {% if  sectionB_1[3] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="MEA_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+    <input type="radio" id="MEA_completed" name="MEA_study" value="completed"{% if sectionB_1 %} {% if  sectionB_1[3] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="MEA_completed">Completed</label>
+    <input type="date" id="MEA_completion_date" name="MEA_date" {% if sectionB_1 %} {% if sectionB_1[3] != none %}value= "{{sectionB_1[3]}}" {% endif %}{% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %}><br>
+
+             </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+    <label for="intellectual_property">Intellectual Property Agreement (Compulsory if relevant)</label>
+          </div>
+      <div class="col-sm-3">
+    <input type="radio" id="intellectual_uncompleted" name="intellectual_study" value="uncompleted"{% if sectionB_1 %} {% if sectionB_1[4] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="intellectual_uncompleted">Not Completed</label>
+         </div>
+        <div class="col-sm-4">
+    <input type="radio" id="intellectual_completed" name="intellectual_study" value="completed"{% if sectionB_1 %} {% if sectionB_1[4] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%} disabled {% endif %}{% endif %} required>
+    <label for="intellectual_completed">Completed</label>
+    <input type="date" id="intellectual_completion_date" name="intellectual_date" {% if sectionB_1 %} {% if sectionB_1[4] != none %}value= "{{sectionB_1[4]}}" {% endif %}{% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %}><br>
+          </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+
+    <label for="thesis_proposal">Thesis proposal seminar (Compulsory)</label>
+          </div>
+      <div class="col-sm-3">
+    <input type="radio" id="thesis_uncompleted" name="thesis_study" value="uncompleted" {% if sectionB_1 %} {% if sectionB_1[5] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="thesis_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+    <input type="radio" id="thesis_completed" name="thesis_study" value="completed" {% if sectionB_1 %} {% if sectionB_1[5] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="thesis_completed">Completed</label>
+    <input type="date" id="thesis_completion_date" name="thesis_date" {% if sectionB_1 %} {% if sectionB_1[5] != none %}value= "{{sectionB_1[5]}}" {% endif %}{% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %}><br>
+  </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+
+    <label for="research_proposal">Research Proposal Approved by appropriate Faculty/Centre Postgraduate or equivalent Committee (Compulsory)</label>
+        </div>
+      <div class="col-sm-3">
+    <input type="radio" id="research_uncompleted" name="research_study" value="uncompleted" {% if sectionB_1 %} {% if sectionB_1[6] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="research_uncompleted">Not Completed</label>
+        </div>
+        <div class="col-sm-4">
+    <input type="radio" id="research_completed" name="research_study" value="completed" {% if sectionB_1 %} {% if sectionB_1[6] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="research_completed">Completed</label>
+    <input type="date" id="research_completion_date" name="research_date" {% if sectionB_1 %} {% if sectionB_1[6] != none %}value= "{{sectionB_1[6]}}" {% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %}><br>
+ </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+
+
+    <label for="pg_conference">Lincoln University PG conference presentation</label>
+        </div>
+      <div class="col-sm-3">
+    <input type="radio" id="pg_conference_uncompleted" name="pg_conference" value="uncompleted" {% if sectionB_1 %} {% if sectionB_1[7] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="pg_conference_uncompleted">Not Completed</label>
+         </div>
+        <div class="col-sm-4">
+    <input type="radio" id="pg_conference_completed" name="pg_conference" value="completed" {% if sectionB_1 %} {% if sectionB_1[7] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="pg_conference_completed">Completed</label>
+    <input type="date" id="pg_conference_completion_date" name="pg_date" {% if sectionB_1 %} {% if sectionB_1[7] != none %}value= "{{sectionB_1[7]}}" {% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %}><br>
+
+         </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-5">
+
+    <label for="thesis_results">Thesis Results Seminar (Strongly recommended)</label>
+          </div>
+      <div class="col-sm-3">
+    <input type="radio" id="thesis_results_uncompleted" name="thesis_results" value="uncompleted" {% if sectionB_1 %} {% if sectionB_1[8] == none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="thesis_results_uncompleted">Not Completed</label>
+         </div>
+        <div class="col-sm-4">
+    <input type="radio" id="thesis_results_completed" name="thesis_results" value="completed" {% if sectionB_1 %} {% if sectionB_1[8] != none %}checked{% endif %} {% if sectionB_1[9] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="thesis_results_completed">Completed</label>
+    <input type="date" id="thesis_results_completion_date" name="thesis_results_date" {% if sectionB_1 %} {% if sectionB_1[8] != none %}value= "{{sectionB_1[8]}}" {% endif %} {% if sectionB_1[9] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %}><br>
+            </div>
+    </div>
+       </div>
+
+
+<h4>Discuss with your supervisor(s) whether or not your research has been or will need to be approved by any of the Lincoln University Committees listed below and tick the appropriate box.</h4>
+     <div class="sectionB_part2">
+      <div class="row">
+      <div class="col-sm-5">
+    <label for="human_ethics_needed">Human Ethics Committee</label>
+         </div>
+      <div class="col-sm-2">
+    <input type="radio" id="human_ethics_needed" name="human_ethics" value="needed" {% if sectionB_2 %} {% if sectionB_2[1]=="needed" %}checked{% endif %} {% if sectionB_2[6]=='Submitted'or progress_id > 1 %} disabled {% endif %} {% endif %} required>
+    <label for="human_ethics_needed">Needed</label>
+         </div>
+      <div class="col-sm-3">
+    <input type="radio" id="human_ethics_approval" name="human_ethics" value="approval given" {% if sectionB_2 %} {% if sectionB_2[1]=="approval given" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="human_ethics_approval">Approval Given</label>
+         </div>
+      <div class="col-sm-2">
+    <input type="radio" id="human_ethics_not_needed" name="human_ethics" value="not needed"{% if sectionB_2 %} {% if sectionB_2[1]=="not needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="human_ethics_not_needed">Not Needed</label>
+         </div>
+    </div>
+
+<br>
+<div class="row">
+  <div class="col-sm-5">
+    <label for="health_safety">Health and Safety Committee</label>
+  </div>
+  <div class="col-sm-2">
+    <input type="radio" id="health_safety_needed" name="health_safety" value="needed" {% if sectionB_2 %} {% if sectionB_2[2]=="needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="health_safety_needed">Needed</label>
+  </div>
+  <div class="col-sm-3">
+    <input type="radio" id="health_safety_approval" name="health_safety" value="approval given"{% if sectionB_2 %}  {% if sectionB_2[2]=="approval given" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="health_safety_approval">Approval Given</label>
+  </div>
+  <div class="col-sm-2">
+    <input type="radio" id="health_safety_not_needed" name="health_safety" value="not needed" {% if sectionB_2 %} {% if  sectionB_2[2]=="not needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="health_safety_not_needed">Not Needed</label>
+  </div>
+</div>
+
+<br>
+<div class="row">
+      <div class="col-sm-5">
+    <label for="animal_ethics">Animal Ethics Committee</label>
+    </div>
+      <div class="col-sm-2">
+    <input type="radio" id="animal_ethics_needed" name="animal_ethics" value="needed"{% if sectionB_2 %} {% if sectionB_2[3]=="needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="animal_ethics_needed">Needed</label>
+    </div>
+      <div class="col-sm-3">
+    <input type="radio" id="animal_ethics_approval" name="animal_ethics" value="approval given"{% if sectionB_2 %} {% if sectionB_2[3]=="approval given" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="animal_ethics_approval">Approval Given</label>
+    </div>
+      <div class="col-sm-2">
+    <input type="radio" id="animal_ethics_not_needed" name="animal_ethics" value="not needed" {% if sectionB_2 %} {% if sectionB_2[3]=="not needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="animal_ethics_not_needed">Not Needed</label>
+  </div>
+    </div>
+<br>
+<div class="row">
+      <div class="col-sm-5">
+    <label for="bio_safety">Institutional Biological Safety Committee</label>
+        </div>
+      <div class="col-sm-2">
+    <input type="radio" id="bio_safety_needed" name="bio_safety" value="needed"{% if sectionB_2 %} {% if sectionB_2[4]=="needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="bio_safety_needed">Needed</label>
+        </div>
+      <div class="col-sm-3">
+    <input type="radio" id="bio_safety_approval" name="bio_safety" value="approval given" {% if sectionB_2 %} {% if sectionB_2[4]=="approval given" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="bio_safety_approval">Approval Given</label>
+        </div>
+      <div class="col-sm-2">
+    <input type="radio" id="bio_safety_not_needed" name="bio_safety" value="not needed" {% if sectionB_2 %} {% if sectionB_2[4]=="not needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="bio_safety_not_needed">Not Needed</label>
+ </div>
+    </div>
+<br>
+<div class="row">
+      <div class="col-sm-5">
+    <label for="radiation_protection">Radiation Protection Officer</label>
+        </div>
+      <div class="col-sm-2">
+    <input type="radio" id="radiation_protection_needed" name="radiation_protection" value="needed"{% if sectionB_2 %} {% if sectionB_2[5]=="needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="radiation_protection_needed">Needed</label>
+        </div>
+      <div class="col-sm-3">
+    <input type="radio" id="radiation_protection_approval" name="radiation_protection" value="approval given" {% if sectionB_2 %} {% if sectionB_2[5]=="approval given" %}checked{% endif %} {% if sectionB_2[6] =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %} required>
+    <label for="radiation_protection_approval">Approval Given</label>
+        </div>
+      <div class="col-sm-2">
+    <input type="radio" id="radiation_protection_not_needed" name="radiation_protection" value="not needed"{% if sectionB_2 %} {% if sectionB_2[5]=="not needed" %}checked{% endif %} {% if sectionB_2[6] =='Submitted'or progress_id > 1 %}disabled{% endif %}{% endif %} required>
+    <label for="radiation_protection_not_needed">Not Needed</label>
+ </div>
+    </div>
+ </div>
+
+ <br>
+ {% if  progress_id == 1 %}
+       <p class="note save-draft">Once you have saved your draft, you can edit your content at any time.</p>
+  <div class="update-button">
+       <input class="btn btn-right" type="submit" name="submit" id="save" value="Save Draft" {% if  progress_id > 1 %}disabled{% endif %} >
+<!--       <input class="btn btn-right" type="submit" name="submit" id="submit" value="Submit" >-->
+        <input type="hidden" name="term" value="{{term}}">
+    </div>
+
+       {% endif%}
+    </form>
+
+
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+<script>
+
+function validateForm() {
+  var sections = [
+    { id: "induction", label: "Induction Programme (Compulsory)" },
+    { id: "mutual", label: "Mutual Expectations Agreement (Compulsory)" },
+    { id: "MEA", label: "Kaupapa Māori Research MEA (Compulsory if relevant)" },
+    { id: "intellectual", label: "Intellectual Property Agreement (Compulsory if relevant)" },
+    { id: "thesis", label: "Thesis proposal seminar (Compulsory)" },
+    { id: "research", label: "Research Proposal Approved by appropriate Faculty/Centre Postgraduate or equivalent Committee (Compulsory)" },
+    { id: "pg_conference", label: "Lincoln University PG conference presentation" },
+    { id: "thesis_results", label: "Thesis Results Seminar (Strongly recommended)" }
+  ];
+
+  var isFormValid = true;
+
+  for (var i = 0; i < sections.length; i++) {
+    var section = sections[i];
+    var studyRadio = document.getElementById(section.id + "_completed");
+    var completionDateInput = document.getElementById(section.id + "_completion_date");
+
+    if (studyRadio.checked && completionDateInput.value === "") {
+      var sectionLabel = section.label;
+      alert("Please enter the completion date for: " + sectionLabel);
+      isFormValid = false;
+      break;
+    }
+  }
+
+  return isFormValid;
+}
+
+
+
+    // Dynamically set the properties of the date input box according to the selected option
+    var completedRadio = document.getElementById("induction_completed");
+    var completionDateInput = document.getElementById("induction_completion_date");
+
+    completedRadio.addEventListener("change", function() {
+        if (completedRadio.checked) {
+            completionDateInput.disabled = false;
+        } else {
+            completionDateInput.disabled = true;
+            completionDateInput.value = "";
+        }
+    });
+
+    function confirmBeforeMovingOn() {
+    var sectionComplete = {% if progress_id == 1 %}false{% else %}true{% endif %};
+    if (!sectionComplete) {
+      var result = confirm("Before moving on to other sections, please ensure that you have saved your changes in this section.");
+      if (!result) {
+        event.preventDefault(); // Prevent the default link behavior if the user cancels
+      }
+    }
+  }
+</script>
+
+<style>
+table, td, th {
+  border: 1px solid black;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,th {
+  text-align: center;
+}
+
+.row .col-sm-5 label{
+  color: #999;
+}
+
+
+.sectionB_part1,.sectionB_part2{
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    padding:10px;
+    border-radius: 5px;
+}
+
+h4{
+ padding-top:20px;
+}
+</style>
+
+
+{% endblock %}

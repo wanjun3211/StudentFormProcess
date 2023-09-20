@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+
+<main>
+    <div>
+
+        <h3 class="list-title">Personal Profile</h3>
+           <div class="card">
+
+            {% for detail in profile_Data %}
+
+
+               <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Full
+                                name</small> <span>{{detail[0]}} {{detail[1]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Email
+                                Address</small> <span>{{detail[3]}}</span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small
+                                class="heading-font-family fw-500">Department</small>
+                            <span>
+                                {% if detail[2] == 'DEM' %}
+                                Environmental Management (DEM)
+                                {% elif detail[2] == 'DTSS' %}
+                                Tourism, Sport and Society (DTSS)
+                                {% elif detail[2] == 'SOLA' %}
+                                Landscape Architecture (SOLA)
+                                {% endif %}
+                            </span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+                    <!-- /.col-md-6 -->
+                    <div class="col-md-6">
+                        <div class="contact-details-cell"><small class="heading-font-family fw-500">Phone</small> <span>{{detail[4]}} </span>
+                        </div>
+                        <!-- /.contact-details-cell -->
+                    </div>
+            {% endfor %}
+            
+
+    </div>
+        <div class="button-area">
+            <form class="row g-3" action="/supervisor/profile/edit" method="post">
+                <button type="submit"   class="btn"  id="Email" name="Email"><i class="fa-solid fa-pen-to-square"></i>Edit Profile</button>
+            </form>
+        </div>
+
+    </div>
+</main>
+
+<style>
+
+.contact-details-cell {
+        border: 1px solid #eef1f2;
+        margin-bottom: 6px;
+        padding: 20px 22px 18px;
+        overflow: hidden;
+        color: #666;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .contact-details-cell span {
+        flex: 1;
+        align-self: flex-end;
+        font-size: 1.1em;
+        margin: 0;
+        text-align: right;
+        color: #666;
+    }
+
+
+    .mr-b-20 {
+        font-size: 1.5rem;
+    }
+
+    .show {
+        border-radius: 6.25rem;
+        margin: 30px 10px;
+        width: 100%;
+    }
+
+    small {
+        color: #bbb;
+        font-size: 1em;
+    }
+
+.button-area{
+    padding:10px;
+    text-align:center;
+    margin-top:20px;
+}
+
+.btn i{
+margin-right:5px;
+}
+
+</style>
+{% endblock %}

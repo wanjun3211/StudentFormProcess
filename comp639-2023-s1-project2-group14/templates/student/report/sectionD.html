@@ -1,0 +1,469 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+  {% if message %}
+            
+  {% if alertStyling == "Red" %}
+  <div class="alert alert-danger" role="alert">
+  {% elif alertStyling == "Green" %}
+  <div class="alert alert-success" role="alert">
+      {% elif alertStyling == "Yellow" %}
+  <div class="alert alert-warning" role="alert">
+  {% else %}
+  <div>
+  {% endif %}
+      <p>{{message}}</p>
+  </div>
+  {% endif %}
+   <ul class="nav nav-tabs">
+            <li><a href="/student/report/intro" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Report Intro</a></li>
+            <li {% if section =='sectionA' %} class="active" {% endif %} ><a href="/student/report/sectionA?term={{term}}">Section A</a></li>
+            <li {% if section =='sectionB' %} class="active" {% endif %}><a href="/student/report/sectionB?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section B</a></li>
+            <li {% if section =='sectionC' %} class="active" {% endif %}><a href="/student/report/sectionC?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section C</a></li>
+            <li {% if section =='sectionD' %} class="active" {% endif %}><a href="/student/report/sectionD?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section D</a></li>
+            <li {% if section =='sectionF' %} class="active" {% endif %}><a href="/student/report/sectionF?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section F</a></li>
+          </ul>
+
+<div class="card">
+
+  <!-- Warning bar for each section -->
+  {% if progress_id > 1 and progress_id < 6%}
+
+  <div class="alert alert-danger" role="alert"> You cannot edit this page as it is currently being processed by
+    {% if progress_id == 2 %}
+    supervisor
+    {%elif progress_id == 3%}
+    Convenor
+    {% elif progress_id == 5%}
+    admin
+    {% endif%}
+  </div>
+
+  {% endif %}
+
+  {% if progress_id == 6 %}
+  <div class="alert alert-warning" role="alert">The report is completed and this cannot be edited</div>
+  {% endif %}
+
+
+       <!-- Progress bar for each section -->
+    {% if progress_id != 1 %}
+     <h4>Report Finished Role:</h4>
+    {% if progress_id == 2 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+    {% elif progress_id == 3 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+    {% elif progress_id == 5 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+    {% elif progress_id == 6 %}
+        <span>Congratulations, this report has been completed.</span>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Admin</div>
+    {% endif %}
+        </div>
+        {% endif %}
+
+    <h4 class="faculty">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h3 class="section-title">Section D - Assessment by student and supervisors</h3>
+    <ul class="section-intro">
+      <li>This is an assessment of your progress and will be included in your postgraduate record.  It is intended primarily to assist you to plan and carry out your study.  
+        The assessment is a documented record of your study and will illustrate your ability to define and achieve objectives.  </li>
+      <li>Complete this after discussing it with your supervisor. </li>
+      <li>Ensure you note and address any deviations from the standard 3-year PhD timeline. Add additional rows to these tables as necessary.</li>
+    </ul>
+
+
+
+    <form id="sectionD" action="/student/report/sectionD" method="POST">
+      <h3 class="title">Research Objectives</h3>
+      <p>Report on your Research Objectives for the last Six Months</p>
+      <table class="table">
+        <thead>
+            <tr>
+                <th>Research Objectives</th>
+                <th>Status (Complete or Incomplete)</th>
+                <th>Comments – Explain, where relevant, <br>why particular activities are not completed</th>
+                <th>Any changes to objectives. If so, why?</th>
+            </tr>
+        </thead>
+        <tbody id="first-objective-body">
+          {% for objective in sectionD_1_objective %}
+            <tr>
+              <td><input class='content-first' type="text" {%if objective[0] %}value="{{objective[0]}}"{%else %}value="" {% endif %}name="first-content-{{ loop.index0 }}" {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+              <td><select name="first-status-{{ loop.index0 }}" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+                <option {%if objective[1] =='complete'%}selected{%endif%} value="complete" >Complete</option>
+                <option {%if objective[1] =='incomplete'%}selected{%endif%} value="incomplete">Incomplete</option>
+              </select></td>
+              <td><input type="text" {%if objective[2] %}value="{{objective[2]}}"{%else %}value="" placeholder="Add your comments..."{% endif %} name="first-comment-{{ loop.index0 }}" {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+              <td><input type="text" {%if objective[3] %}value="{{objective[3]}}"{%else %}value=""placeholder=" Enter your text here..." {% endif %} name="first-changes-{{ loop.index0 }}" {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+              {% if progress_id ==1 %}
+              <td class="delete"><button class="btn-delete" onclick="deleteRow(this)" {% if  progress_id > 1 %}disabled{% endif %}>Delete</button></td>
+              {% endif %}
+            </tr>
+        
+          {% endfor %}
+
+          </tbody>
+
+      </table>
+        {% if progress_id ==1 %}
+          <button class="btn-update" type="button" onclick="addRow()" {% if  progress_id > 1 %}disabled{% endif %}>Add Row</button>
+          {% endif %}
+
+    <hr>
+    <h3 class="title">Effects Of COVID-19</h3>
+    <p>Evaluation of effects of COVID-19 on research progress
+      (Detail any effects on your research plan of impacts such as travel restrictions, university closure including office or lab access, participant survey opportunities, financial hardship and social, emotional and mental well-being.)
+    </p>
+    <textarea rows="4" cols="50" id="covid" name="covid" placeholder="Enter your text here..." {% if content_status =='Submitted' or progress_id > 1 %}disabled{% endif %}>{% if sectionD_2_covid %}{{sectionD_2_covid[0][0]}}{% endif %}</textarea>
+    
+    <hr>
+    
+    <h3 class="title">Other Significant Academic Achievements</h3>
+    <p>Other Significant Academic Achievements in the last Six Months
+      (List other achievements including conference presentations, publications, workshops, posters, etc.)
+    </p>
+    <textarea rows="4" cols="50" id="achievements" name="achievements" placeholder="Enter your text here..." {% if content_status == 'Submitted' or progress_id > 1 %}disabled{% endif %}>{% if sectionD_3_achievements %}{{sectionD_3_achievements[0][0]}}{% endif %}</textarea>
+
+    <hr>
+    <h3 class="title">Research Objectives</h3>
+    <p>Research Objectives for the next Six Months</p>
+
+    <table class="table no-shadow">
+      <thead>
+          <tr>
+              <th>Research Objectives</th>
+              <th>Target completion date</th>
+              <th>Anticipated problems in achieving objectives</th>
+          </tr>
+      </thead>
+      <tbody id="fourth-objective-body">
+        {% for objective in sectionD_4 %}
+          <tr>
+            <td><input class='obj' type="text" {%if objective[0] %}value="{{objective[0]}}"{%else %}value="" {% endif %} name="first-objective-{{ loop.index0 }}" {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+            <td><input type="date" {%if objective[1] %}value="{{objective[1]}}"{%else %}value="" {% endif %} name="first-target-{{ loop.index0 }}" {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}></td>
+            <td><input type="text" {%if objective[2] %}value="{{objective[2]}}"{%else %}value="" {% endif %} name="first-problem-{{ loop.index0 }}" {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+            {% if progress_id ==1 %}
+            <td class="delete"><button class="btn-delete" onclick="deleteRow(this)" {% if  progress_id > 1 %}disabled{% endif %}>Delete</button></td>
+            {% endif %}
+          </tr>
+      
+        {% endfor %}
+
+        </tbody>
+    </table>
+    {% if progress_id ==1 %}
+        <button class="btn-update" type="button" onclick="addRow_fourth()" {% if  progress_id > 1 %}disabled{% endif %}>Add Row</button>
+    {% endif %}
+    <hr>
+    <h3 class="title">Expected Research Expenditure</h3>
+    <p>Expected Research Expenditure for the next Six Months</p>
+    <table class="table no-shadow">
+      <thead>
+          <tr>
+              <th>Item</th>
+              <th>Amount</th>
+              <th>Notes</th>
+          </tr>
+      </thead>
+      <tbody id="fifth-objective-body">
+        {% for objective in sectionD_5 %}
+          <tr>
+            <td><input type="text" {%if objective[0] %}value="{{objective[0]}}"{%else %}value="" {% endif %} name="first-item-{{ loop.index0 }}" {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}></td>
+            <td><input type="number" {%if objective[1] %}value="{{objective[1]}}"{%else %}value="" {% endif %} name="first-amount-{{ loop.index0 }}" {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+            <td><input type="text" {%if objective[2] %}value="{{objective[2]}}"{%else %}value="" {% endif %} name="first-note-{{ loop.index0 }}" {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}></td>
+            {% if progress_id ==1 %}
+            <td class="delete"><button class="btn-delete" onclick="deleteRow(this)" {% if  progress_id > 1 %}disabled{% endif %}>Delete</button></td>
+            {% endif %}
+            
+            
+          </tr>
+      
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+        {% if progress_id ==1 %}
+        <button type="button" class="btn-update" onclick="addRow_fifth()" {% if  progress_id > 1 %}disabled{% endif %}>Add Row</button>
+        {% endif %}
+  
+
+    {% if progress_id ==1 %}
+    <div class="update-button">
+        <p class="note save-draft">Once you have saved your draft, you can edit your content at any time.</p>
+      <button class="btn btn-right" type="submit" name="save-draft" {% if  progress_id > 1 %}disabled{% endif %}>Save draft</button>
+      <input type="hidden" name="term" value="{{term}}">
+      <input type="hidden" name="report_id" value="{{report_id}}">
+  </div>
+  {% endif %}
+
+</form>
+
+
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+<style>
+td ,th{
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  width:30%;
+}
+
+table {
+  width: 100%;
+}
+
+td,th {
+  text-align: center;
+}
+
+.dialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border: 1px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.dialog p {
+  margin-bottom: 10px;
+}
+
+.section-intro li {
+    list-style: square;
+    list-style-position: inside;
+}
+
+
+.btn-update{
+    margin-top:10px;
+}
+
+.btn-delete{
+    margin-left:10px;
+}
+
+.delete{
+  border: none;
+  }
+
+  td input[type="text"], td input[type="number"] {
+    box-sizing: border-box;
+    border: none;
+  }
+    td input[type="text"]{
+     width:100%;
+    }
+
+  td select {
+   border: none;
+   margin-right:10px;
+  }
+
+  textarea {
+  width:80%;
+  height:100px;
+  }
+
+  thead{
+  height:40px;
+  }
+
+  .update-button{
+  margin-top:10px;
+  }
+  .btn-right{
+  margin-left:0px;
+  }
+
+  .table th ,.table>tbody>tr>td{
+  border-top: none;
+  }
+
+  .no-shadow{
+  overflow-x: hidden;
+    overflow-y: hidden;
+  }
+</style>
+
+
+<script>
+  {% if progress_id == 1%}
+  window.onload = function() {
+    alert("Make sure you have met your supervisor before completing Section D!");
+  }
+  {% endif %}
+
+  var maxRows = 6;
+  //Add row for 1st objective (need to add delete feature as well )
+  function addRow() {
+    
+    var tbody = document.getElementById('first-objective-body');
+    var numRows = tbody.rows.length; 
+
+    var contentIndex = document.querySelectorAll('.content-first').length;
+
+    if (numRows < maxRows) {
+    var row = document.createElement('tr');
+    var content = document.createElement('td');
+    var status = document.createElement('td');
+    var comment = document.createElement('td');
+    var changes = document.createElement('td');
+    var deleteButton = document.createElement('td');
+    
+    content.innerHTML = `<input class='content-first' type="text" name="first-content-${contentIndex}" placeholder=" Enter your text here..." required>`;
+    status.innerHTML = `<select name="first-status-${contentIndex}" required><option value="complete">Complete</option><option value="incomplete">Incomplete</option></select>`;
+    comment.innerHTML = `<input type="text" placeholder="Add your comment..." name="first-comment-${contentIndex}" required>`;
+    changes.innerHTML = `<input type="text" placeholder="Type N/A if nothing changed" name="first-changes-${contentIndex}" required>`;
+    deleteButton.innerHTML = '<button class="btn-delete" onclick="deleteRow(this)">Delete</button>' ; // Create the delete button
+    deleteButton.classList.add("delete");
+
+    row.appendChild(content);
+    row.appendChild(status);
+    row.appendChild(comment);
+    row.appendChild(changes);
+    row.appendChild(deleteButton); // Append the delete button cell to the row
+
+    tbody.appendChild(row);
+    } else {
+      alert("You can only add up to SIX rows!");
+    }
+    
+}
+
+// Delete row for 1st objective
+function deleteRow(button) {
+    var row = button.parentNode.parentNode; // Get the parent row of the delete button
+    var tbody = row.parentNode;
+    tbody.removeChild(row);
+}
+
+//Add row for 4th objective 
+function addRow_fourth() {
+    var tbody = document.getElementById('fourth-objective-body');
+    var numRows = tbody.rows.length; 
+
+    var objIndex = document.querySelectorAll('.obj').length;
+
+    if (numRows < maxRows) {
+    var row = document.createElement('tr');
+    var objective = document.createElement('td');
+    var target = document.createElement('td');
+    var problem = document.createElement('td');
+    var deleteButton = document.createElement('td');
+    
+    objective.innerHTML = `<input class='obj' type="text" name="first-objective-${objIndex}"placeholder=" Enter your text here..." required>`;
+    target.innerHTML = `<input type="date" name="first-target-${objIndex}" required>`;
+    problem.innerHTML = `<input type="text" name="first-problem-${objIndex}" placeholder=" Enter your text here..." required>`;
+    deleteButton.innerHTML = '<button class="btn-delete" onclick="deleteRow(this)">Delete</button>'; // Create the delete button
+    deleteButton.classList.add("delete");
+
+    row.appendChild(objective);
+    row.appendChild(target);
+    row.appendChild(problem);
+    row.appendChild(deleteButton);
+    
+    tbody.appendChild(row);
+  }else {
+    alert("You can only add up to SIX future objectives rows!");
+  }
+
+}
+
+var maxRowsItems = 10;
+// Add row for 5th objective
+function addRow_fifth() {
+    var tbody = document.getElementById('fifth-objective-body');
+    var numRows = tbody.rows.length; 
+
+    var itemIndex = document.querySelectorAll('.item').length;
+
+    if (numRows < maxRowsItems) {
+    var row = document.createElement('tr');
+    var item = document.createElement('td');
+    var amount = document.createElement('td');
+    var note = document.createElement('td');
+    var deleteButton = document.createElement('td');
+    
+    item.innerHTML = `<input class='item' type="text" name="first-item-${itemIndex}" placeholder=" Enter your text here..." required>`;
+    amount.innerHTML = `<input type="number" name="first-amount-${itemIndex}" placeholder=" Enter the number..." required>`;
+    
+    note.innerHTML = `<input type="text" placeholder="Type N/A if nothing changed" name="first-note-${itemIndex}" required>`;
+    deleteButton.innerHTML = '<button class="btn-delete" onclick="deleteRow(this)">Delete</button>'; // Create the delete button
+    deleteButton.classList.add("delete");
+
+    row.appendChild(item);
+    row.appendChild(amount);
+    row.appendChild(note);
+    row.appendChild(deleteButton);
+    
+    tbody.appendChild(row);
+
+    } else {
+      alert("You can only add up to TEN item rows! If you have more expenses, please email the admin for more details.");
+    }
+}
+
+  function submitConfirmation() {
+    const confirmation = confirm("Do you want to submit the form?\n\nPress cancel and select at the top bar to go to Section F. If not, click on okay to submit.");
+
+  if (confirmation) {
+    // Submit the form
+    document.getElementById("sectionD").submit();
+    } else {
+      event.preventDefault();
+    }
+  }
+
+  // Confirm that person has save draft before moving forward to Section D
+  function confirmBeforeMovingOn() {
+    var sectionComplete = {% if progress_id == 1 %}false{% else %}true{% endif %};
+    if (!sectionComplete) {
+      var result = confirm("Before moving on to other sections, please ensure that you have saved your changes in this section.");
+      if (!result) {
+        event.preventDefault(); // Prevent the default link behavior if the user cancels
+      }
+    }
+  }
+
+  document.getElementById('sectionD').addEventListener('submit', function(e) {
+    console.group("My log output")
+    console.log("I AM IN HERE");
+    var textarea = document.getElementById('covid');
+    var textarea_ach = document.getElementById('achievements');
+    textarea.value = textarea.value.replace(/^\s+|\s+$/g, "");
+    textarea_ach.value = textarea_ach.value.replace(/^\s+|\s+$/g, "");
+    console.log(textarea_ach);
+    console.groupEnd();
+  });
+
+</script>
+
+{% endblock %}

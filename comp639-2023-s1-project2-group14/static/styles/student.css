@@ -1,0 +1,83 @@
+
+.student-personalinfo input{
+    width:80%;
+}
+
+.change-password-student input {
+    width:50%;
+}
+
+.faculty{
+    color:#990033;
+    text-align:center;
+}
+
+.report_intro {
+    padding-left: 20px;
+}
+
+.report_intro li{
+    list-style: disc;
+}
+
+input[type=text], input[type=date]{
+/*  width: 200px; */
+  padding: 5px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+
+.thesis-title{
+width: 300px;
+}
+
+
+.report_progress{
+    border: 2px solid red;
+    border-radius: 5px;
+    padding:10px;
+    text-align:center;
+}
+
+.progress_undone{
+color:#990033;
+}
+
+.progress_done{
+color:#38998F;
+}
+
+.tbody{
+border: 1px solid #eef1f2;
+}
+
+ .card{
+    border-top:none;
+   /* border-radius: 0; */
+}
+
+.section-title{
+text-align:center;
+margin-bottom:30px;
+}
+
+.subsection-title{
+margin-bottom:30px;
+}
+
+.note{
+  color: #999;
+  font-size: 1em;
+}
+
+.section-intro{
+ border: 1px solid rgba(0, 0, 0, 0.125);
+    padding:10px;
+    border-radius: 5px;
+    margin:20px 0;
+}
+
+.no-record{
+  color: #666;
+}

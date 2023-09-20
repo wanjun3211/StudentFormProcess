@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    <h2>Student Details</h2>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/admin/students">Students</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Student Detail</li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="info-content">
+            {% if message %}
+
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+                {% elif alertStyling == "Green" %}
+                <div class="alert alert-success" role="alert">
+                    {% elif alertStyling == "Yellow" %}
+                    <div class="alert alert-warning" role="alert">
+                        {% else %}
+                        <div>
+                            {% endif %}
+                            <p>{{message}}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="info-content">
+                        <h3 class="title">Personal Profile</h3>
+                        {% for detail in students_list %}
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Full
+                                        name</small> <span>{{detail[0]}} {{detail[1]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Email
+                                        Address</small> <span>{{detail[2]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small
+                                        class="heading-font-family fw-500">Password</small> <span>{{detail[3]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small
+                                        class="heading-font-family fw-500">Department</small>
+                                    <span>
+                                        {% if detail[4] == 'DEM' %}
+                                        Environmental Management (DEM)
+                                        {% elif detail[4] == 'DTSS' %}
+                                        Tourism, Sport and Society (DTSS)
+                                        {% elif detail[4] == 'SOLA' %}
+                                        Landscape Architecture (SOLA)
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Enrolment
+                                        Date</small> <span>{{detail[5]}} </span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small
+                                        class="heading-font-family fw-500">Address</small> <span>{{detail[6]}} </span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small
+                                        class="heading-font-family fw-500">Phone</small> <span>{{detail[7]}} </span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">PhD
+                                        Status</small> <span>{{detail[8]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Thesis
+                                        Title</small> <span>{{detail[9]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+
+
+                        </div>
+
+                        {% endfor %}
+
+
+                        <h3 class="title">Supervisor Information</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Main
+                                        Supervisor</small> <span>{{supervisor_list[0]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Associate
+                                        Supervisor</small> <span>{{supervisor_list[1]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+                            <div class="col-md-6">
+                                <div class="contact-details-cell"><small class="heading-font-family fw-500">Other
+                                        Supervisor </small> <span>{{supervisor_list[2]}}</span>
+                                </div>
+                                <!-- /.contact-details-cell -->
+                            </div>
+
+                        </div>
+                        <h3 class="title">Other Information</h3>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button class="btn show " id="show-employment-btn" name="employment" type="submit"
+                                    onclick="fetchEmployments()">Show Employments</button>
+
+                                <!-- The Modal -->
+                                <div id="myModalemp" class="modal">
+                                    <!-- Modal content -->
+                                    <div class="modal-content">
+                                        <h1>Employments</h1>
+                                        <div id="employmentContent">
+
+                                        </div>
+                                        <span class="close" onclick="closeModalemp()">Close</span>
+
+                                    </div>
+                                </div>
+
+                        </div>
+                        <div class="col-md-3">
+                                <button class="btn show" id="show-scholarships-btn" name="scholarship" type="submit"
+                                    onclick="fetchScholarships()">Show Scholarship</button>
+
+                                <!-- The Modal -->
+                                <div id="myModal" class="modal">
+                                    <!-- Modal content -->
+                                    <div class="modal-content">
+                                        <h1>Scholarships</h1>
+                                        <div id="scholarshipContent">
+                                            <!-- Scholarship content will be inserted here dynamically -->
+                                        </div>
+
+                                        <span class="close" onclick="closeModal()">Close</span>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            {% if report_list %}
+                        <div class="col-md-3">
+                        <a class="btn show"
+                            href="/student/history_report?student_id={{students_list[0][10]}}"><span>Show History
+                                Report</span></a>
+                            </div>
+
+                        {% endif %}
+                        </div>
+                        <form action="/admin/update_student" method="POST" class="button-area">
+                            <input type="hidden" name="ID" value="{{students_list[0][10]}}">
+                            <button class="btn btn-right" type="submit" name="update">Update</button>
+                        <a href="/admin/students" class="btn-update">Back</a>
+
+                        </form><br>
+
+
+                    </div>
+
+</main>
+
+<style>
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 5%;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        max-width: 70%;
+    }
+
+    .close {
+        color: #030303;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    table.scholarship-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    table.scholarship-table th,
+    table.scholarship-table td {
+        padding: 8px;
+        text-align: left;
+    }
+
+    table.scholarship-table th.table-header-cell {
+        background-color: #006d67;
+        font-weight: bold;
+    }
+
+    table.scholarship-table td.table-cell {
+        border-top: 1px solid #ddd;
+    }
+
+    table.scholarship-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+
+    .contact-details-cell {
+        border: 1px solid #eef1f2;
+        margin-bottom: 6px;
+        padding: 20px 22px 18px;
+        overflow: hidden;
+        color: #666;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .contact-details-cell span {
+        flex: 1;
+        align-self: flex-end;
+        font-size: 1.1em;
+        margin: 0;
+        text-align: right;
+        color: #666;
+    }
+
+    .card {
+        border-top: none;
+        border-radius: 0;
+    }
+
+    .mr-b-20 {
+        font-size: 1.5rem;
+    }
+
+    .show {
+        border-radius: 6.25rem;
+        margin: 30px 10px;
+        width: 100%;
+    }
+
+    small {
+        color: #bbb;
+        font-size: 1em;
+    }
+
+
+    .button-area {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .btn-right {
+        margin-right: 30px;
+    }
+
+    h2 {
+        text-align: center;
+    }
+</style>
+
+
+<script>
+    // Function to open the modal
+    function openModal() {
+        event.preventDefault();
+        document.getElementById("myModal").style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        event.preventDefault();
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    // Function to fetch scholarship content asynchronously
+    function fetchScholarships() {
+        console.log("IN SCHOLARHSIPS")
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/admin/fetch_scholarships", true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                var scholarships = JSON.parse(xhr.responseText); // Parse the JSON data
+
+                // Create the table dynamically
+                var table = document.createElement("table");
+                table.classList.add("scholarship-table");
+                var tableBody = document.createElement("tbody");
+
+                // Create table header
+                var headerRow = document.createElement("tr");
+                headerRow.classList.add("table-header");
+                var headers = ["Name", "Value", "Tenure", "End Date"];
+
+                headers.forEach(function (headerText) {
+                    var header = document.createElement("th");
+                    header.textContent = headerText;
+                    header.classList.add("table-header-cell");
+                    headerRow.appendChild(header);
+                });
+
+                tableBody.appendChild(headerRow);
+
+                // Populate table with data
+                scholarships.forEach(function (scholarship) {
+                    var row = document.createElement("tr");
+
+                    Object.values(scholarship).forEach(function (value) {
+                        var cell = document.createElement("td");
+                        cell.textContent = value;
+                        cell.classList.add("table-cell");
+                        row.appendChild(cell);
+                    });
+
+                    tableBody.appendChild(row);
+                });
+
+                table.appendChild(tableBody);
+
+                // Replace the content of scholarshipContent with the table
+                var scholarshipContent = document.getElementById("scholarshipContent");
+                scholarshipContent.innerHTML = ""; // Clear any existing content
+                scholarshipContent.appendChild(table);
+
+                openModal();
+            }
+        };
+        xhr.send();
+    }
+
+    // Function to open the modal
+    function openModalemp() {
+        document.getElementById("myModalemp").style.display = "block";
+    }
+
+    // Function to close the modal
+    function closeModalemp() {
+        document.getElementById("myModalemp").style.display = "none";
+    }
+
+    function fetchEmployments() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/admin/fetch_employments", true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                var employments = JSON.parse(xhr.responseText); // Parse the JSON data
+
+                // Create the table dynamically
+                var table = document.createElement("table");
+                table.classList.add("scholarship-table");
+                var tableBody = document.createElement("tbody");
+
+                // Create table header
+                var headerRow = document.createElement("tr");
+                headerRow.classList.add("table-header");
+                var headers = ["Teaching", "Research", "Other"];
+
+                headers.forEach(function (headerText) {
+                    var header = document.createElement("th");
+                    header.textContent = headerText;
+                    header.classList.add("table-header-cell");
+                    headerRow.appendChild(header);
+                });
+
+                tableBody.appendChild(headerRow);
+
+                // Populate table with data
+                employments.forEach(function (employment) {
+                    var row = document.createElement("tr");
+
+                    Object.values(employment).forEach(function (value) {
+                        var cell = document.createElement("td");
+                        cell.textContent = value;
+                        cell.classList.add("table-cell");
+                        row.appendChild(cell);
+                    });
+
+                    tableBody.appendChild(row);
+                });
+
+                table.appendChild(tableBody);
+
+                // Replace the content of scholarshipContent with the table
+                var employmentContent = document.getElementById("employmentContent");
+                employmentContent.innerHTML = ""; // Clear any existing content
+                employmentContent.appendChild(table);
+
+                openModalemp();
+            }
+        };
+
+        xhr.send();
+    }
+
+</script>
+
+{% endblock %}

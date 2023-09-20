@@ -1,0 +1,211 @@
+/* Import navbar.css */
+@import url("navbarstyle.css");
+
+/* Import admin related css */
+@import url("admin.css");
+
+/* Import supervisor related css */
+@import url("supervisor.css");
+
+/* Import student related css */
+@import url("student.css");
+
+/* Import student related css */
+@import url("dashboard.css");
+
+body {
+    min-height:100vh;
+    margin: 0;
+    font-family: "Poppins", "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.71429;
+    color:#444;
+}
+
+main {
+    position:relative;
+    z-index:0;
+    margin-left:270px;
+    padding: 95px 0;
+    height: 100vh;
+    overflow-y:auto;
+    margin-right:20px;
+}
+
+/* Login Page */
+.full-screen-container {
+    background-image:url("../images/login-background.jpg");
+    height:100vh;
+    width:100vw;
+    background-size:cover;
+    background-position: center;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    background-color:hsla(201,100%,6%,0.6);
+    padding:50px 30px;
+    min-width:400px;
+    width:50%;
+    max-width:600px;
+}
+
+.login-title {
+    color:white;
+    text-align:center;
+    margin:0;
+    margin-bottom:40px;
+    font-size:2.5em;
+    font-weight:normal;
+}
+
+.input-group {
+    display:flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    color:white;
+    font-weight: lighter;
+    font-size:1.5em;
+    margin-bottom:7px;
+}
+
+.input-group input {
+    font-size:1.5em;
+    padding: .1em,.25em;
+    background-color: hsla(201,100%,91%,0.3);
+    border: 1px solid hsl(201,100%,6%);
+    outline: none;
+    border-radius: 5px;
+    color:white;
+    font-weight: lighter;
+}
+
+.input-group input:focus {
+    border: 1px solid hsl(201,100%,50%);
+
+}
+
+.login-button {
+    padding:10px 30px;
+    width:100%;
+    border-radius: 5px;
+    background-color:hsla(201,100%,50%,0.1);
+    border:hsl(201,100%,50%);
+    outline:none;
+    font-size:1.5em;
+    color:white;
+    font-weight: lighter;
+    margin-top: 5px;
+    cursor:pointer;
+}
+
+.login-button:hover {
+    background-color:hsla(201,100%,50%,0.3);
+}
+
+.login-button:focus {
+    background-color:hsla(201,100%,50%,0.5);
+}
+
+.error_msg {
+    color:red;
+}
+
+/* Login Page - Sign Up Section */
+.signup-box {
+    display:flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.signup-text {
+    color:white;
+    font-weight: lighter;
+    font-size:1.5em;
+    margin-top:20px;
+    
+}
+
+.signup-button {
+    padding:10px 30px;
+    width:100%;
+    border-radius: 5px;
+    background-color:hsla(221, 99%, 47%, 0.493);
+    border:hsl(201,100%,50%);
+    outline:none;
+    font-size:1.5em;
+    color:white;
+    font-weight: lighter;
+    
+    cursor:pointer;
+}
+
+.signup-button:hover {
+    background-color:hsla(221, 99%, 47%, 0.3);
+}
+
+.signup-button:focus {
+    background-color:hsla(221, 99%, 47%, 0.5);
+}
+
+
+/* Sign Up Page */
+.image-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/signup-background.jpg'); 
+    background-size: cover;
+    background-position: center;
+  }
+
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height:100vh;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+    z-index:1;
+}
+
+.signup-back-button{
+    margin-right:280px;
+}
+
+.signup-label {
+    color:black;
+    text-align:center;
+    margin:0;
+    margin-bottom:40px;
+    font-size:2.5em;
+    font-weight:normal;
+}
+
+.signup-content {
+    width: 80%;
+}
+
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 100%;
+  }
+}

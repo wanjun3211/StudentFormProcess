@@ -1,0 +1,402 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    <div class="breadcrumbs">
+        <ul class="nav nav-tabs">
+            <li {% if section=='sectionA' %} class="active" {% endif %}><a
+                    href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a>
+            </li>
+            <li {% if section=='sectionB' %} class="active" {% endif %}><a
+                    href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a>
+            </li>
+            <li {% if section=='sectionC' %} class="active" {% endif %}><a
+                    href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a>
+            </li>
+            <li {% if section=='sectionD' %} class="active" {% endif %}><a
+                    href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a>
+            </li>
+            <li {% if section=='sectionE' %} class="active" {% endif %}><a
+                    href="/view_report/sectionE?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section E</a>
+            </li>
+            <li {% if section=='sectionF' %} class="active" {% endif %}><a
+                    href="/view_report/sectionF?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section F</a>
+            </li>
+            {% if routing == '1' %}
+            <li><a href='/admin/send_reminder?report=done'>Exit Report</a></li>
+            {% elif routing == 'student-part' %}
+            <li><a href='/student/history_report'>Exit Report</a></li>
+            {% elif routing == 'view-supervisors' or routing == 'finish-sectionE'%}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+
+            {% elif routing == 'done_report' %}
+            <li><a href='/admin/send_reminder?report=completed'>Exit Report</a></li>
+            {% elif routing == 'admin-part' %}
+            <li><a href='/student/history_report?report_id={{report_id}}'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='12' %}
+            <li><a href='/convenor/students'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='12view' %}
+            <li><a href='/convenor/students'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='11' %}
+            <li><a href='/chair/grade/task'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='13' %}
+            <li><a href='/chair/students'>Exit Report</a></li>
+            {% endif %}
+            <!-- this part is for chair to take action on Section F -->
+            {% if routing =='14' %}
+            <li><a href='/chair/grade/task'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='14chairview' %}
+            <li><a href='/chair/students'>Exit Report</a></li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="card">
+        {% if sectionE_list %}
+        <h4 class="info-title">Faculty of Environment Society and Design</h4>
+        <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+        <h3 class="section-title">Section E – Assessment of Student by Supervisor(s)</h3>
+        <ul class="section-intro">
+            <li>This form will remain confidential to the Supervisor(s), Student, Faculty Postgraduate Administrator /
+                Chairperson and Faculty Dean (or nominee). </li>
+            <li>Note that external supervisors/advisors/Tuakana are required to complete this assessment form where the
+                student is working primarily offsite.</li>
+
+            <li>Supervisors are required to use this form to comment on students at six-monthly intervals, but this form
+                may be used at any time if problems arise. </li>
+            <li>Students will subsequently receive a copy of these forms with supervisors’ comments on them. </li>
+            <li>If the student is unhappy with these comments they can approach the Faculty Postgraduate Chairperson (or
+                the LU Postgraduate Director, see page 1) to discuss the issue. </li>
+            <li>If the student’s progress is unsatisfactory in a major way, without prospects of resolution, further
+                action may be taken (see the PhD House Rules).</li>
+        </ul>
+
+
+        <p><strong>Student Name:</strong> {{student_info[0][0]}}</p>
+        <p><strong>Student ID:</strong>{{student_info[0][1]}}</p>
+
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            {% for supervisor in sectionE_list %}
+            <li class="nav-item">
+                <a {% if loop.index==1 %}class="nav-link active" {% else %}class="nav-link" {% endif %}
+                    id="supervisor-tab{{ loop.index }}" data-toggle="tab" href="#supervisor{{ loop.index }}" role="tab"
+                    aria-controls="supervisor{{ loop.index }}" {% if loop.index==1 %}aria-selected="true" {% else %}
+                    aria-selected="false" {% endif %}>Supervisor {{ loop.index }}</a>
+            </li>
+        {% endfor %}
+
+        {% if routing !='12' and routing !='11' %}
+        <li class="nav-item">
+            <a class="nav-link" id="convenor-tab" data-toggle="tab" href="#convenor" role="tab" aria-controls="convenor" aria-selected="false" >Convenor</a>
+        </li>
+        {% endif %}
+
+        {% if routing =='12' %}
+        <li class="nav-item">
+            <a class="nav-link" id="convenor-list" data-toggle="tab" href="#convenor-grade" role="tab" aria-controls="convenor-grade" aria-selected="false" >Convenor Grade</a>
+        </li>
+        {% endif %}
+
+        {% if routing =='11' %}
+        <li class="nav-item">
+            <a class="nav-link" id="chair-list" data-toggle="tab" href="#chair-grade" role="tab" aria-controls="convenor-grade" aria-selected="false" >Chair Grade</a>
+        </li>
+        {% endif %}
+
+    </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Supervisor Tab -->
+            {% for supervisor in sectionE_list %}
+            <div {% if loop.index==1 %}class="tab-pane fade show active" {% else %}class="tab-pane fade" {% endif %}
+                id="supervisor{{ loop.index }}" role="tabpanel" aria-labelledby="supervisor-tab{{ loop.index }}">
+                <h3 class="subsection-title">Supervisor Name: {{supervisor[0]}}</h3>
+                <div class="form-group">
+                    <label for="supervisor_answer1">Question 1: How do you rate the student’s overall progress in the
+                        last 6 months</label>
+                    <select class="form-control" id="supervisor_answer1" name="supervisor_answer1">
+                        <option value="Excellent" {% if supervisor[1]=="Excellent" %} selected {% endif %} disabled>
+                            Excellent</option>
+                        <option value="Good" {% if supervisor[1]=="Good" %}selected {% endif %} disabled>Good</option>
+                        <option value="Satisfactory" {% if supervisor[1]=="Satisfactory" %} selected {% endif %}
+                            disabled>Satisfactory</option>
+                        <option value="Below Average" {% if supervisor[1]=="Below Average" %}selected {% endif %}
+                            disabled>Below Average</option>
+                        <option value="Unsatisfactory" {% if supervisor[1]=="Unsatisfactory" %} selected {% endif %}
+                            disabled>Unsatisfactory</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="supervisor_answer2">Question 2: How do you rate the student’s overall progress in terms
+                        of the 3-year PhD track</label>
+                    <select class="form-control" id="supervisor_answer2" name="supervisor_answer2">
+                        <option value="Excellent" {% if supervisor[2]=="Excellent" %} selected {% endif %} disabled>
+                            Excellent</option>
+                        <option value="Good" {% if supervisor[2]=="Good" %}selected {% endif %} disabled>Good</option>
+                        <option value="Satisfactory" {% if supervisor[2]=="Satisfactory" %} selected {% endif %}
+                            disabled>Satisfactory</option>
+                        <option value="Below Average" {% if supervisor[2]=="Below Average" %}selected {% endif %}
+                            disabled>Below Average</option>
+                        <option value="Unsatisfactory" {% if supervisor[2]=="Unsatisfactory" %} selected {% endif %}
+                            disabled>Unsatisfactory</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="supervisor_answer3">Question 3: How would you rate the quality of the student’s academic
+                        work, e.g., research writing</label>
+                    <select class="form-control" id="supervisor_answer3" name="supervisor_answer3">
+                        <option value="Excellent" {% if supervisor[3]=="Excellent" %} selected {% endif %} disabled>
+                            Excellent</option>
+                        <option value="Good" {% if supervisor[3]=="Good" %}selected {% endif %} disabled>Good</option>
+                        <option value="Satisfactory" {% if supervisor[3]=="Satisfactory" %} selected {% endif %}
+                            disabled>Satisfactory</option>
+                        <option value="Below Average" {% if supervisor[3]=="Below Average" %}selected {% endif %}
+                            disabled>Below Average</option>
+                        <option value="Unsatisfactory" {% if supervisor[3]=="Unsatisfactory" %} selected {% endif %}
+                            disabled>Unsatisfactory</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="supervisor_answer4">Question 4: Student’s technical skill/s to complete the
+                        project</label>
+                    <select class="form-control" id="supervisor_answer4" name="supervisor_answer4">
+                        <option value="Excellent" {% if supervisor[4]=="Excellent" %} selected {% endif %} disabled>
+                            Excellent</option>
+                        <option value="Good" {% if supervisor[4]=="Good" %}selected {% endif %} disabled>Good</option>
+                        <option value="Satisfactory" {% if supervisor[4]=="Satisfactory" %} selected {% endif %}
+                            disabled>Satisfactory</option>
+                        <option value="Below Average" {% if supervisor[4]=="Below Average" %}selected {% endif %}
+                            disabled>Below Average</option>
+                        <option value="Unsatisfactory" {% if supervisor[4]=="Unsatisfactory" %} selected {% endif %}
+                            disabled>Unsatisfactory</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="supervisor_answer5">Question 5: How would you rate the student’s likelihood of achieving
+                        the next 6-months objectives</label>
+                    <select class="form-control" id="supervisor_answer5" name="supervisor_answer5">
+                        <option value="Excellent" {% if supervisor[5]=="Excellent" %} selected {% endif %} disabled>
+                            Excellent</option>
+                        <option value="Good" {% if supervisor[5]=="Good" %}selected {% endif %} disabled>Good</option>
+                        <option value="Satisfactory" {% if supervisor[5]=="Satisfactory" %} selected {% endif %}
+                            disabled>Satisfactory</option>
+                        <option value="Below Average" {% if supervisor[5]=="Below Average" %}selected {% endif %}
+                            disabled>Below Average</option>
+                        <option value="Unsatisfactory" {% if supervisor[5]=="Unsatisfactory" %} selected {% endif %}
+                            disabled> Unsatisfactory</option>
+                    </select>
+                </div>
+                <div class="form-group">
+
+
+                    <p>If a progress review meeting has taken place in the period covered by this report, have any
+                        recommendations from that meeting been carried out?</p>
+                    <label>
+                        <input type="radio" {% if supervisor[6]=='Yes' %}checked{% endif %} disabled>YES
+                    </label>
+                    <label>
+                        <input type="radio" {% if supervisor[6]=='No' %}checked{% endif %} disabled>NO
+                    </label>
+                    <label>
+                                <input type="radio" {% if supervisor[6] =='N/A' %}checked{% endif %} disabled>N/A
+                        </label>
+                        
+
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor_comments">Comments:</label>
+                        <textarea class="form-control" id="supervisor_comments" name="supervisor_comments" rows="3" readonly>{{supervisor[7]}}</textarea>
+                    </div>
+
+
+        </div>
+          {% endfor %}
+
+        <!-- Convenor Tab -->
+ {% if routing !='12' and  routing !='11'%}
+ <div class="tab-pane fade" id="convenor" role="tabpanel" aria-labelledby="convenor-tab">
+            {% if sectionE_convenor %}
+         {% for convenor in sectionE_convenor %}
+                <h3 class="section-title">Department/School PG Convenor Evaluation</h3>
+                 <h3 class="subsection-title">Convenor Name: {{convenor[0]}}</h3>
+                    <div class="form-group">
+                        <label for="convenor_highlight">Highlight:</label>
+                        <textarea class="form-control" id="convenor_highlight" name="convenor_highlight" rows="3" readonly>{{convenor[1]}}</textarea>
+                    </div>
+                     <div class="form-group">
+                         <p>Convenors to complete:</p>
+                         <label>
+                                <input type="radio" {% if convenor[2] =='G' %}checked{% endif %} disabled>G-green
+                        </label>
+                    <label>
+                                <input type="radio" {% if  convenor[2] =='O' %}checked{% endif %} disabled>O-orange
+                        </label>
+                    <label>
+                                <input type="radio" {% if convenor[2] =='R' %}checked{% endif %} disabled>R-red
+                        </label>
+                         </div>
+            {% endfor %}
+                {% else %}
+                <h3>Sorry, The convenor didn't finish this part.</h3>
+                {% endif %}
+                </div>
+        
+  {% endif %}
+
+
+      {% if routing =='12' %}
+   <!-- Convenor grade Tab -->
+        <div class="tab-pane fade" id="convenor-grade" role="tabpanel" aria-labelledby="convenor-list">
+            <h3 class="section-title"> Grade And Comment</h3>
+                    
+                    <form method="POST" action="/convenor/grade_edited">
+                            <label for="grade">Choose a grade:</label>
+                            <select id="grade" name="grade"  required>
+                            <option value="G">Green-all good</option>
+                            <option value="O">Orange-some unsatisfactory comments</option>
+                            <option value="R">Red-unsatisfactory</option>
+                            </select><br><br>
+
+                        <!-- also part of Section E that need to be fill by convener -->
+                            <label for="comment">Comment and highlight:</label>
+                            <textarea class="input-text" type="text" id="comment" name="comment" rows="3" required></textarea><br><br>
+
+                            <!-- report ID need to be submitted to update database as an identification -->
+                            <input type="hidden" id="reprot_ID" name="reprot_ID" value="{{report_id}}">
+
+                            <input class="btn" type="submit" value="Submit" onclick="return convener_confirmSubmit()">
+
+                            
+                    </form>
+
+
+
+        </div>
+
+        {% endif %}
+
+
+
+
+        {% if routing =='11' %}
+
+        <!-- chair grade Tab -->
+              <div class="tab-pane fade" id="chair-grade" role="tabpanel" aria-labelledby="chair-list">
+                  <h3 class="section-title"> Comment and highlight</h3>
+                          
+                          <form method="POST" action="/chair/grade_edited">
+                                  <label for="grade">Choose a grade:</label>
+                                  <select id="grade" name="grade"  required>
+                                  <option value="G">Green-all good</option>
+                                  <option value="O">Orange-some unsatisfactory comments</option>
+                                  <option value="R">Red-unsatisfactory</option>
+                                  </select><br><br>
+
+                              <!-- also part of Section E that need to be fill by convener -->
+                                  <label for="comment">Comment and highlight:</label>
+                                  <textarea class="input-text" type="text" id="comment" name="comment" rows="3" required></textarea><br><br>
+      
+                                  <!-- report ID need to be submitted to update database as an identification -->
+                                  <input type="hidden" id="reprot_ID" name="reprot_ID" value="{{report_id}}">
+      
+                                  <input class="btn" type="submit" value="Submit" onclick="return convener_confirmSubmit()">
+
+                                  
+                          </form>
+
+    
+      
+              </div>
+      
+              {% endif %}
+
+
+         </div>
+  {% else %}
+        <h3>Sorry, This student didn't submit section E.</h3>
+   {% endif %}
+ </div>
+
+</main>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+<style>
+    .card {
+        border-top: none;
+        border-radius: 0;
+    }
+
+    .form-control {
+        margin: 10px 0;
+    }
+
+    select.form-control:not([size]):not([multiple]) {
+        height: auto;
+    }
+
+    .section-intro li {
+        list-style: square;
+        list-style-position: inside;
+    }
+
+    strong {
+        margin-right: 10px;
+    }
+
+    .tab-pane {
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        border-top: none;
+        padding: 10px 20px;
+    }
+
+    form .input-text {
+    width:80%;
+    height:100px;
+
+    }
+</style>
+
+<script>
+    function convener_confirmSubmit() {
+        var confirmed = confirm("are you sure you want to submit？");
+        if (confirmed) {
+
+            document.getElementById("myForm").submit();
+        } else {
+
+            return false;
+        }
+    }
+</script>
+
+{% if routing == 'check-supervisors' %}
+    <script>
+        function showMessage() {
+            alert('WARNING! You are exiting the report before checking all sections!');
+        }
+    </script>
+{% endif %}
+
+
+{% endblock %}

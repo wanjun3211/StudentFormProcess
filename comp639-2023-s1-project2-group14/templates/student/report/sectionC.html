@@ -1,0 +1,721 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+  {% if message %}
+
+  {% if alertStyling == "Red" %}
+  <div class="alert alert-danger" role="alert">
+  {% elif alertStyling == "Green" %}
+  <div class="alert alert-success" role="alert">
+      {% elif alertStyling == "Yellow" %}
+  <div class="alert alert-warning" role="alert">
+  {% else %}
+  <div>
+  {% endif %}
+      <p>{{message}}</p>
+  </div>
+{% endif %}
+   <ul class="nav nav-tabs">
+            <li><a href="/student/report/intro" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Report Intro</a></li>
+            <li {% if section =='sectionA' %} class="active" {% endif %} ><a href="/student/report/sectionA?term={{term}}">Section A</a></li>
+            <li {% if section =='sectionB' %} class="active" {% endif %}><a href="/student/report/sectionB?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section B</a></li>
+            <li {% if section =='sectionC' %} class="active" {% endif %}><a href="/student/report/sectionC?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section C</a></li>
+            <li {% if section =='sectionD' %} class="active" {% endif %}><a href="/student/report/sectionD?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section D</a></li>
+            <li {% if section =='sectionF' %} class="active" {% endif %}><a href="/student/report/sectionF?term={{term}}" {% if progress_id > 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section F</a></li>
+          </ul>
+
+<div class="card">
+
+    <!-- Warning bar for each section -->
+  {% if progress_id > 1 and progress_id < 6%}
+
+  <div class="alert alert-danger" role="alert"> You cannot edit this page as it is currently being processed by
+    {% if progress_id == 2 %}
+    supervisor
+    {%elif progress_id == 3%}
+    Convenor
+    {% elif progress_id == 4%}
+    chair
+    {% elif progress_id == 5%}
+    admin
+    {% endif%}
+  </div>
+
+  {% endif %}
+
+  {% if progress_id == 6 %}
+  <div class="alert alert-warning" role="alert">The report is completed and this cannot be edited</div>
+  {% endif %}
+
+       <!-- Progress bar for each section -->
+    {% if progress_id != 1 %}
+     <h4>Report Finished Role:</h4>
+    {% if progress_id == 2 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+    {% elif progress_id == 3 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+    {% elif progress_id == 5 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+    {% elif progress_id == 6 %}
+        <span>Congratulations, this report has been completed.</span>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Admin</div>
+    {% endif %}
+        </div>
+        {% endif %}
+
+    <h4 class="faculty">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h3 class="section-title">Section C - Evaluation of Faculty (or Centre) performance</h3>
+    <h4>Rate each of the following as they affect your study within the Faculty (or Centre).
+      If you have any concerns about undertaking this evaluation then please go directly to section D and then complete section F.
+      Select the appropriate rating described (Very good, good, satisfactory, unsatisfactory or not relevant):</h4>
+
+
+
+    <form action="/student/report/sectionC" method="POST">
+        <table>
+            <thead>
+              <tr>
+                <th>Questions</th>
+                <th>Options</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+
+            <tbody id= "my-table">
+
+              <tr>
+                <td>Access to supervisors – principal</td>
+                <td>
+                    <select name="access-sup-principal" required  {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+                      <option value="" selected disabled>Select an option</option>
+                        <option value="very good"{% if sectionc_part1%} {% if sectionc_part1[0][0] == 'very good' %} selected {% endif %}{% endif %} >Very Good</option>
+                        <option value="good" {% if sectionc_part1%}{% if sectionc_part1[0][0] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                        <option value="satisfied" {% if sectionc_part1%}{% if sectionc_part1[0][0] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                        <option value="unsatisfied"{% if sectionc_part1%} {% if sectionc_part1[0][0] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                        <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][0] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+                      </select>
+                </td>
+
+                  <td><input type="text" name="access-sup-principal-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%} {% if sectionc_part1_comments[0][0] %} value="{{sectionc_part1_comments[0][0]}}" {% else %}
+                    placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}></td>
+
+            </tr>
+
+            <tr>
+              <td>Access to supervisors – associate/others</td>
+              <td>
+                  <select name="access-sup-associate" required   {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+                    <option value="" selected disabled>Select an option</option>
+                    <option value="very good" title="Very Good" {% if sectionc_part1%}  {% if sectionc_part1[0][1] == 'very good' %} selected {% endif %} {% endif %} >Very Good</option>
+                    <option value="good" title="Good" {% if sectionc_part1%} {% if sectionc_part1[0][1] == 'good' %} selected {% endif %} {% endif %}>Good</option>
+                    <option value="satisfied" title="Satisfactory" {% if sectionc_part1%} {% if sectionc_part1[0][1] == 'satisfied' %} selected {% endif %} {% endif %}>Satisfactory</option>
+                    <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}  {% if sectionc_part1[0][1] == 'unsatisfied' %} selected {% endif %} {% endif %} >Unsatisfactory</option>
+                    <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}  {% if sectionc_part1[0][1] == 'not relevant' %} selected {% endif %} {% endif %}>Not Relevant</option>
+                  </select>
+                </td>
+                <td>
+                  <input type="text" name="access-sup-associate-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][1] %} value="{{sectionc_part1_comments[0][1]}}" {% else %}
+                   placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+                </td>
+
+          </tr>
+
+          <tr>
+            <td>Supervisor expertise– principal</td>
+            <td>
+                <select name="sup-expert-principal" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+                  <option value="" selected disabled>Select an option</option>
+                  <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][2] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+                  <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][2] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                  <option value="satisfied" title="Satisfactory"{% if sectionc_part1%} {% if sectionc_part1[0][2] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                  <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][2] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                  <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][2] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+                </select>
+              </td>
+              <td>
+                <input type="text" name="sup-expert-principal-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][2] %} value="{{sectionc_part1_comments[0][2]}}" {% else %}
+                 placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+              </td>
+
+        </tr>
+        <tr>
+            <td>Supervisor expertise – associate/others</td>
+            <td>
+                <select name="sup-expert-associate" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+                  <option value="" selected disabled>Select an option</option>
+                  <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][3] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+                  <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][3] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                  <option value="satisfied" title="Satisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][3] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                  <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][3] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                  <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][3] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+                </select>
+              </td>
+              <td>
+                <input type="text" name="sup-expert-associate-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][3] %} value="{{sectionc_part1_comments[0][3]}}" {% else %}
+                placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+              </td>
+
+        </tr>
+        <tr>
+            <td>Quality of supervisor feedback – principal</td>
+            <td>
+                <select name="quality-feedback-principal" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+                  <option value="" selected disabled>Select an option</option>
+                  <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][4] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+                  <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][4] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                  <option value="satisfied" title="Satisfactory"{% if sectionc_part1%} {% if sectionc_part1[0][4] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                  <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][4] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                  <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][4] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+                </select>
+              </td>
+              <td>
+                <input type="text" name="quality-feedback-principal-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][4] %} value="{{sectionc_part1_comments[0][4]}}"{% else %}
+                placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+              </td>
+
+        </tr>
+        <tr>
+          <td>Quality of supervisor feedback – associate/ others</td>
+          <td>
+              <select name="quality-feedback-associate" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+                <option value="" selected disabled>Select an option</option>
+                <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][5] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+                <option value="good" title="Good"{% if sectionc_part1%} {% if sectionc_part1[0][5] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                <option value="satisfied" title="Satisfactory"{% if sectionc_part1%} {% if sectionc_part1[0][5] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][5] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][5] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+              </select>
+            </td>
+            <td>
+              <input type="text" name="quality-feedback-associate-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][5] %} value="{{sectionc_part1_comments[0][5]}}" {% else %}
+              placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+            </td>
+
+      </tr>
+      <tr>
+          <td>Timeliness of supervisor feedback – principal</td>
+          <td>
+              <select name="timeliness-principal" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+                <option value="" selected disabled>Select an option</option>
+                <option value="very good" title="Very Good"{% if sectionc_part1%} {% if sectionc_part1[0][6] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+                <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][6] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                <option value="satisfied" title="Satisfactory"{% if sectionc_part1%} {% if sectionc_part1[0][6] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][6] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][6] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+              </select>
+            </td>
+            <td>
+              <input type="text" name="timeliness-principal-comment"  placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][6] %} value="{{sectionc_part1_comments[0][6]}}"{% else %}
+               placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+            </td>
+
+      <tr>
+          <td>Timeliness of supervisor feedback – associate/ others</td>
+          <td>
+              <select name="timeliness-associate" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+                <option value="" selected disabled>Select an option</option>
+                <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][7] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+                <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][7] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+                <option value="satisfied" title="Satisfactory"{% if sectionc_part1%} {% if sectionc_part1[0][7] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+                <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][7] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+                <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][7] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+              </select>
+            </td>
+            <td>
+              <input type="text" name="timeliness-associate-comment" placeholder="Add your comment..." {% if sectionc_part1_comments%} {% if sectionc_part1_comments[0][7] %} value="{{sectionc_part1_comments[0][7]}}" {% else %}
+               placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+            </td>
+
+      </tr>
+      <tr>
+        <td>Courses available</td>
+        <td>
+            <select name="courses" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+              <option value="" selected disabled>Select an option</option>
+              <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][8] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+              <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][8] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+              <option value="satisfied" title="Satisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][8] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+              <option value="unsatisfied" title="Unsatisfactory"{% if sectionc_part1%} {% if sectionc_part1[0][8] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+              <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][8] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" name="courses-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%} {% if sectionc_part1_comments[0][8] %} value="{{sectionc_part1_comments[0][8]}}" {% else %}
+             placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+          </td>
+
+    </tr>
+    <tr>
+        <td>Workspace</td>
+        <td>
+            <select name="workspace" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+              <option value="" selected disabled>Select an option</option>
+              <option value="very good" title="Very Good"{% if sectionc_part1%} {% if sectionc_part1[0][9] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+              <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][9] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+              <option value="satisfied" title="Satisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][9] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+              <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][9] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+              <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][9] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" name="workspace-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%} {% if sectionc_part1_comments[0][9] %} value="{{sectionc_part1_comments[0][9]}}" {% else %}
+            placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+          </td>
+
+    </tr>
+    <tr>
+        <td>Computer facilities</td>
+        <td>
+            <select name="comp-facilities" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+              <option value="" selected disabled>Select an option</option>
+              <option value="very good" title="Very Good" {% if sectionc_part1%}{% if sectionc_part1[0][10] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+              <option value="good" title="Good" {% if sectionc_part1%}{% if sectionc_part1[0][10] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+              <option value="satisfied" title="Satisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][10] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+              <option value="unsatisfied" title="Unsatisfactory" {% if sectionc_part1%}{% if sectionc_part1[0][10] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+              <option value="not relevant" title="Not Relevant" {% if sectionc_part1%}{% if sectionc_part1[0][10] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" name="comp-facilities-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][10] %} value="{{sectionc_part1_comments[0][10]}}" {% else %} placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+          </td>
+
+    </tr>
+    <tr>
+      <td>ITS support</td>
+      <td>
+          <select name="its-support" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+            <option value="" selected disabled>Select an option</option>
+            <option value="very good" {% if sectionc_part1%}{% if sectionc_part1[0][11] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+            <option value="good" {% if sectionc_part1%}{% if sectionc_part1[0][11] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+            <option value="satisfied" {% if sectionc_part1%}{% if sectionc_part1[0][11] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+            <option value="unsatisfied" {% if sectionc_part1%}{% if sectionc_part1[0][11] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+            <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][11] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" name="its-support-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][11] %} value="{{sectionc_part1_comments[0][11]}}" {% else %} placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+        </td>
+
+
+  </tr>
+  <tr>
+    <td>Research software</td>
+    <td>
+        <select name="research" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %} >
+          <option value="" selected disabled>Select an option</option>
+          <option value="very good" {% if sectionc_part1%}{% if sectionc_part1[0][12] == 'very good' %} selected {% endif %} {% endif %}>Very Good</option>
+          <option value="good" {% if sectionc_part1%}{% if sectionc_part1[0][12] == 'good' %} selected {% endif %} {% endif %}>Good</option>
+          <option value="satisfied" {% if sectionc_part1%}{% if sectionc_part1[0][12] == 'satisfied' %} selected {% endif %} {% endif %}>Satisfactory</option>
+          <option value="unsatisfied" {% if sectionc_part1%}{% if sectionc_part1[0][12] == 'unsatisfied' %} selected {% endif %} {% endif %}>Unsatisfactory</option>
+          <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][12] == 'not relevant' %} selected {% endif %} {% endif %}>Not Relevant</option>
+        </select>
+      </td>
+      <td>
+        <input type="text" name="research-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][12] %} value="{{sectionc_part1_comments[0][12]}}" {% else %} placeholder="Add your comment..."  {% endif %} {% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+      </td>
+
+</tr>
+<tr>
+  <td>Library facilities</td>
+  <td>
+      <select name="library" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+        <option value="" selected disabled>Select an option</option>
+        <option value="very good" {% if sectionc_part1%}{% if sectionc_part1[0][13] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+        <option value="good"{% if sectionc_part1%} {% if sectionc_part1[0][13] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+        <option value="satisfied"{% if sectionc_part1%} {% if sectionc_part1[0][13] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+        <option value="unsatisfied"{% if sectionc_part1%} {% if sectionc_part1[0][13] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+        <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][13] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+      </select>
+    </td>
+    <td>
+      <input type="text" name="library-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%} {% if sectionc_part1_comments[0][13] %} value="{{sectionc_part1_comments[0][13]}}" {% else %} placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+    </td>
+  </tr>
+  <tr>
+      <td>Teaching & Learning Centre support</td>
+      <td>
+          <select name="teaching-support" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+            <option value="" selected disabled>Select an option</option>
+            <option value="very good" {% if sectionc_part1%}{% if sectionc_part1[0][14] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+            <option value="good" {% if sectionc_part1%}{% if sectionc_part1[0][14] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+            <option value="satisfied" {% if sectionc_part1%}{% if sectionc_part1[0][14] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+            <option value="unsatisfied" {% if sectionc_part1%}{% if sectionc_part1[0][14] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+            <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][14] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" name="teaching-support-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][14] %} value="{{sectionc_part1_comments[0][14]}}" {% else %} placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+        </td>
+
+  </tr>
+  <tr>
+      <td>Statistical support</td>
+      <td>
+          <select name="statistical" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+            <option value="" selected disabled>Select an option</option>
+            <option value="very good" {% if sectionc_part1%}{% if sectionc_part1[0][15] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+            <option value="good"{% if sectionc_part1%} {% if sectionc_part1[0][15] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+            <option value="satisfied"{% if sectionc_part1%}{% if sectionc_part1[0][15] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+            <option value="unsatisfied" {% if sectionc_part1%}{% if sectionc_part1[0][15] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+            <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][15] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" name="statistical-comment"  placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][15] %} value="{{sectionc_part1_comments[0][15]}}" {% else %} placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+        </td>
+
+  </tr>
+  <tr>
+      <td>Research equipment</td>
+      <td>
+          <select name="research-eq" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+            <option value="" selected disabled>Select an option</option>
+            <option value="very good"  {% if sectionc_part1%}{% if sectionc_part1[0][16] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+            <option value="good"  {% if sectionc_part1%}{% if sectionc_part1[0][16] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+            <option value="satisfied"  {% if sectionc_part1%}{% if sectionc_part1[0][16] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+            <option value="unsatisfied"  {% if sectionc_part1%}{% if sectionc_part1[0][16] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+            <option value="not relevant"  {% if sectionc_part1%}{% if sectionc_part1[0][16] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" name="research-eq-comment"placeholder="Add your comment..." {% if sectionc_part1_comments%} {% if sectionc_part1_comments[0][16] %} value="{{sectionc_part1_comments[0][16]}}" {% else %} placeholder="Add your comment..."  {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+        </td>
+
+  </tr>
+  <tr>
+      <td>Technical support</td>
+      <td>
+          <select name="technical-support" required {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+            <option value="" selected disabled>Select an option</option>
+            <option value="very good"{% if sectionc_part1%} {% if sectionc_part1[0][17] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+            <option value="good"{% if sectionc_part1%} {% if sectionc_part1[0][17] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+            <option value="satisfied"{% if sectionc_part1%} {% if sectionc_part1[0][17] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+            <option value="unsatisfied" {% if sectionc_part1%}{% if sectionc_part1[0][17] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+            <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][17] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" name="technical-support-comment" placeholder="Add your comment..."{% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][17] %} value="{{sectionc_part1_comments[0][17]}}" {% else %} placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+        </td>
+
+  </tr>
+  <tr>
+      <td>Financial resources</td>
+      <td>
+          <select name="financial" required  {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+            <option value="" selected disabled>Select an option</option>
+            <option value="very good" {% if sectionc_part1%}{% if sectionc_part1[0][18] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+            <option value="good" {% if sectionc_part1%}{% if sectionc_part1[0][18] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+            <option value="satisfied"{% if sectionc_part1%} {% if sectionc_part1[0][18] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+            <option value="unsatisfied" {% if sectionc_part1%}{% if sectionc_part1[0][18] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+            <option value="not relevant" {% if sectionc_part1%}{% if sectionc_part1[0][18] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+          </select>
+        </td>
+        <td>
+          <input type="text" name="financial-comment"placeholder="Add your comment..." {% if sectionc_part1_comments%}{% if sectionc_part1_comments[0][18] %} value="{{sectionc_part1_comments[0][18]}}" {% else %} placeholder="Add your comment..." {% endif %}{% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+        </td>
+
+  </tr>
+
+  <tr >
+    {% for item in sectionc_part1_other%}
+    <td>
+      Other (Please Specify)
+      <input class="other" required type="text" name="other-title-{{ loop.index0 }}"
+        {% if sectionc_part1_other %}
+          {% if sectionc_part1_other[loop.index0][0] %}
+            value="{{ sectionc_part1_other[loop.index0][0] }}"
+          {% endif %}
+        {% endif %}
+        {% if content_status == 'Submitted' or progress_id > 1 %}
+          disabled
+        {% endif %}>
+    </td>
+        <td>
+            <select name="other-{{ loop.index0 }}" required {% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+              <option value="very good" {% if sectionc_part1_other%} {% if sectionc_part1_other[ loop.index0][1] == 'very good' %} selected {% endif %}{% endif %}>Very Good</option>
+              <option value="good" {% if sectionc_part1_other%}{% if sectionc_part1_other[loop.index0 ][1] == 'good' %} selected {% endif %}{% endif %}>Good</option>
+              <option value="satisfied" {% if sectionc_part1_other%}{% if sectionc_part1_other[loop.index0 ][1] == 'satisfied' %} selected {% endif %}{% endif %}>Satisfactory</option>
+              <option value="unsatisfied" {% if sectionc_part1_other%}{% if sectionc_part1_other[ loop.index0 ][1] == 'unsatisfied' %} selected {% endif %}{% endif %}>Unsatisfactory</option>
+              <option value="not relevant" {% if sectionc_part1_other%}{% if sectionc_part1_other[ loop.index0 ][1] == 'not relevant' %} selected {% endif %}{% endif %}>Not Relevant</option>
+            </select>
+          </td>
+          <td>
+            <input required type="text" name="other-comment-{{ loop.index0 }}" {% if sectionc_part1_other%}{% if sectionc_part1_other[loop.index0 ][2] %} value="{{sectionc_part1_other[loop.index0][2]}}" {% endif %} {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}{% endif %}>
+          </td>
+          {% if content_status =='Draft' %}
+          <td class="delete"><button  class="btn-delete" onclick="deleteRow(this)" {% if  progress_id > 1 %}disabled{% endif %}>Delete</button></td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+
+
+
+
+</tbody>
+</table>
+<div>
+  {% if content_status =='Draft' or content_status == ''%}
+  <small> Press Add Row to add other topics to evaluate and you can only add up to 6 other topics</small><br>
+  <button  class="btn-update" type="button" id="add-row-button" onclick="addRow()" {% if progress_id > 1 %}disabled{% endif %}>Add Other Topic</button>
+  {% endif %}
+</div>
+
+
+<div class="sectionC-part2">
+<p>How frequently do you have a meeting with your supervisor?</p>
+
+<div class="row">
+<div class="col-sm-2">
+<input type="radio" name="meeting" value="Weekly" id="weekly"  {% if sectionc_part2 %}{% if sectionc_part2[0][0] == 'Weekly' %} checked {% endif %} {% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+<label for="weekly">Weekly</label>
+</div>
+<div class="col-sm-4">
+<input type="radio" name="meeting" value="Fortnightly" id="fortnightly" {% if sectionc_part2 %}{% if sectionc_part2[0][0] == 'Fortnightly' %} checked {% endif %}{% endif %} {% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+<label for="fortnightly">Fortnightly</label>
+   </div>
+<div class="col-sm-3">
+<input type="radio" name="meeting" value="Monthly" id="monthly" {% if sectionc_part2 %}{% if sectionc_part2[0][0] == 'Monthly' %} checked {% endif %} {% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+<label for="monthly">Monthly</label>
+</div>
+<div class="col-sm-3">
+<input type="radio" name="meeting" value="Every 3 months" id="3months"{% if sectionc_part2 %} {% if sectionc_part2[0][0] == 'Every 3 months' %} checked {% endif %} {% endif %}{% if content_status =='Submitted' or progress_id > 1%}disabled{% endif %}>
+<label for="3months">Every 3 months</label>
+   </div>
+   </div>
+<div class="row">
+<div class="col-sm-2">
+<input type="radio" name="meeting" value="Half yearly" id="halfyear"{% if sectionc_part2 %} {% if sectionc_part2[0][0] == 'Half yearly' %} checked {% endif %} {% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+<label for="halfyear">Half yearly</label>
+   </div>
+<div class="col-sm-4">
+<input type="radio" name="meeting" value="Not at all" id="none" {% if sectionc_part2 %}{% if sectionc_part2[0][0] == 'Not at all' %} checked {% endif %} {% endif %}{% if content_status =='Submitted'or progress_id > 1 %}disabled{% endif %}>
+<label for="none">Not at all</label>
+  </div>
+   </div>
+<p>What is the usual period for receiving feedback from your supervisor on submitted materials?</p>
+
+<div class="row">
+<div class="col-sm-2">
+  <input type="radio" name="feedback" value="1 week" id="1week" {% if sectionc_part2 %}{% if sectionc_part2[0][1] == '1 week' %} checked {% endif %}{% endif %}{% if content_status == 'Submitted' or progress_id > 1 %}disabled{% endif %}>
+  <label for="1week">1 week</label>
+</div>
+<div class="col-sm-4">
+  <input type="radio" name="feedback" value="2 weeks" id="2weeks" {% if sectionc_part2 %}{% if sectionc_part2[0][1] == '2 weeks' %} checked {% endif %}{% endif %}{% if content_status == 'Submitted' or progress_id > 1 %}disabled{% endif %}>
+  <label for="2weeks">2 weeks</label>
+</div>
+<div class="col-sm-3">
+  <input type="radio" name="feedback" value="1 month" id="1month" {% if sectionc_part2 %} {% if sectionc_part2[0][1] == '1 month' %} checked {% endif %}{% endif %}{% if content_status == 'Submitted' or progress_id > 1 %}disabled{% endif %}>
+  <label for="1month">1 month</label>
+</div>
+<div class="col-sm-3">
+  <input type="radio" name="feedback" value="3 months" id="3months" {% if sectionc_part2 %} {% if sectionc_part2[0][1] == '3 months' %} checked {% endif %}{% endif %}{% if content_status == 'Submitted' or progress_id > 1 %}disabled{% endif %}>
+  <label for="3months">3 months</label>
+</div>
+</div>
+
+<p>How do you receive your feedback from your supervisor? (Tick more than one box if appropriate)</p>
+<div class="row">
+<div class="col-sm-2">
+  <input type="checkbox" name="feedback-supervisor" value="Softcopy" id="softcopy"
+  {% if sectionc_part2_receive_feedback %}{% if ('Softcopy',) in sectionc_part2_receive_feedback %}checked{% endif %}{% endif %}
+  {% if  progress_id > 1 %}disabled{% endif %}>
+  <label for="softcopy">Softcopy</label>
+</div>
+<div class="col-sm-4">
+  <input type="checkbox" name="feedback-supervisor" value="Comments on submitted material" id="comments"
+  {% if sectionc_part2_receive_feedback %}{% if ('Comments on submitted material',) in sectionc_part2_receive_feedback %}checked{% endif %}{% endif %}
+  {% if progress_id > 1 %}disabled{% endif %}>
+  <label for="comments">Comments on submitted material</label>
+</div>
+<div class="col-sm-3">
+  <input type="checkbox" name="feedback-supervisor" value="Verbally" id="verbally"
+  {% if sectionc_part2_receive_feedback %}{% if ('Verbally',) in sectionc_part2_receive_feedback %}checked{% endif %}{% endif %}
+  {% if  progress_id > 1 %}disabled{% endif %}>
+  <label for="verbally">Verbally</label>
+</div>
+<div class="col-sm-3">
+  <input type="checkbox" name="feedback-supervisor" value="On a separate letter" id="separate"
+  {% if sectionc_part2_receive_feedback %}{% if ('On a separate letter',) in sectionc_part2_receive_feedback %}checked{% endif %}{% endif %}
+  {% if  progress_id > 1 %}disabled{% endif %}>
+  <label for="separate">On a separate letter</label>
+</div>
+</div>
+
+<p class="note save-draft">Please make sure all questions in Sections A, B and C are completed before you meet your supervisor and Associate Supervisor to complete Section D.</p>
+
+
+{% if content_status =='Draft' or content_status == '' %}
+<div class="update-button">
+  <input class="btn btn-right" type="submit" name="submit" id="save" value="Save Draft" {% if progress_id > 1 %}disabled{% endif %}>
+    <input type="hidden" name="term" value="{{term}}">
+    <input type="hidden" name="report_id" value="{{report_id}}">
+</div>
+{% endif %}
+
+</form>
+
+
+
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+
+<style>
+td, th {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+table {
+  width: 100%;
+    align-items: center;
+    height: 100vh;
+}
+
+td,th {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  white-space: normal;
+  padding-left:5px;
+}
+
+td input[type="text"] {
+    width: 400px;
+    box-sizing: border-box;
+    border: none;
+  }
+td select {
+   border: none;
+   margin-right:10px;
+  }
+
+  .btn-update , .save-draft {
+  margin-top:10px;
+  }
+
+  .delete{
+  border: none;
+  }
+  .row{
+  display:block;
+  }
+
+.sectionC-part2 {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+    padding:10px;
+    border-radius: 5px;
+    margin:20px 0;
+}
+
+</style>
+
+<script>
+
+  var maxRows = 25;
+
+
+   function addRow() {
+    var tbody = document.getElementById("my-table");
+    var numRows = tbody.rows.length;
+
+    var otherIndex = document.querySelectorAll('.other').length;
+
+    console.log(otherIndex)
+
+    if (numRows < maxRows) {
+    var newRow = document.createElement("tr");
+    var title = document.createElement("td");
+    var selecttd = document.createElement("td");
+    var comment = document.createElement("td");
+    var deleteButton = document.createElement("td");
+
+    title.innerHTML = `Other (Please Specify)<input required class="other" type="text" name="other-title-${otherIndex}">`;
+    var select = document.createElement("select");
+    select.name = `other-${otherIndex}`;
+    select.required = true;
+
+    var option1 = document.createElement("option");
+    option1.value = "very good";
+    option1.textContent = "Very Good";
+    select.appendChild(option1);
+
+    var option2 = document.createElement("option");
+    option2.value = "good";
+    option2.textContent = "Good";
+    select.appendChild(option2);
+
+    var option3 = document.createElement("option");
+    option3.value = "satisfied";
+    option3.textContent = "Satisfactory";
+    select.appendChild(option3);
+
+    var option4 = document.createElement("option");
+    option4.value = "unsatisfied";
+    option4.textContent = "Unsatisfactory";
+    select.appendChild(option4);
+
+    var option5 = document.createElement("option");
+    option5.value = "not relevant";
+    option5.textContent = "Not Relevant";
+    select.appendChild(option5);
+    comment.innerHTML = `<input required type="text" name="other-comment-${otherIndex}" placeholder="Add your comment..." >`;
+    deleteButton.innerHTML = '<button type="button" class="delete-row-button btn-delete" onclick="deleteRow(this)">Delete</button>'
+    deleteButton.classList.add("delete");
+
+    newRow.appendChild(title);
+    newRow.appendChild(selecttd);
+      selecttd.appendChild(select);
+      newRow.appendChild(comment);
+      newRow.appendChild(deleteButton);
+
+      tbody.appendChild(newRow);
+
+
+    var deleteButton = newRow.querySelector(".delete-row-button");
+    deleteButton.addEventListener("click", deleteRow);
+    } else {
+      alert("You can only add up to SIX other rows!");
+    }
+  }
+
+  function deleteRow(button) {
+    var row = button.parentNode.parentNode; // Get the parent row of the delete button
+    var tbody = row.parentNode;
+    tbody.removeChild(row);
+}
+
+// Confirm that person has save draft before moving forward to Section D
+function confirmBeforeMovingOn() {
+    var sectionComplete = {% if progress_id == 1 %}false{% else %}true{% endif %};
+    if (!sectionComplete) {
+      var result = confirm("Before moving on to other sections, please ensure that you have saved your changes in this section.");
+      if (!result) {
+        event.preventDefault(); // Prevent the default link behavior if the user cancels
+      }
+    }
+  }
+
+</script>
+
+
+{% endblock %}

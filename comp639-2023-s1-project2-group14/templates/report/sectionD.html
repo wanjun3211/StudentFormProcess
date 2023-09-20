@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+  {% if routing == 'check-supervisors' %}
+    <div class="alert alert-warning" role="alert">Remember to confirm or reject this student's submission before exitting the report.</div>
+  {% elif routing == 'filling-sectionE'%}
+  <div class="alert alert-warning" role="alert">Make sure to review all sections and fill in the sectionE when you are
+    in Section D.
+  </div>
+  {% endif %}
+
+  <div class="breadcrumbs">
+    <ul class="nav nav-tabs">
+      <li {% if section=='sectionA' %} class="active" {% endif %}><a
+          href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a></li>
+      <li {% if section=='sectionB' %} class="active" {% endif %}><a
+          href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a></li>
+      <li {% if section=='sectionC' %} class="active" {% endif %}><a
+          href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a></li>
+      <li {% if section=='sectionD' %} class="active" {% endif %}><a
+          href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a></li>
+      {% if routing != 'check-supervisors' and routing != 'view-supervisors-other' and routing != 'filling-sectionE'%}
+      <li {% if section=='sectionE' %} class="active" {% endif %}><a
+          href="/view_report/sectionE?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section E</a></li>
+      <li {% if section=='sectionF' %} class="active" {% endif %}><a
+          href="/view_report/sectionF?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section F</a></li>
+      {% endif %}
+      {% if routing == 'filling-sectionE' %}
+      <li {% if section=='sectionE' %} class="active" {% endif %}><a
+          href="/supervisor/sectionE?report_id={{report_id}}">Fill Section E</a></li>
+      {% endif %}
+      {% if routing =='1' %}
+      <li><a href='/admin/send_reminder?report=done'>Exit Report</a></li>
+      {% elif routing == 'student-part' %}
+      <li><a href='/student/history_report'>Exit Report</a></li>
+      {% elif routing == 'view-supervisors' or routing == 'finish-sectionE' or routing == 'filling-sectionE' %}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+      {% elif routing == 'view-supervisors-other' %}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+      {% elif routing == 'check-supervisors'%}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}' onclick="showMessage()">Exit Report</a></li>
+
+      {% elif routing == 'done_report' %}
+      <li><a href='/admin/send_reminder?report=completed'>Exit Report</a></li>
+      {% elif routing == 'admin-part' %}
+      <li><a href='/student/history_report?report_id={{report_id}}'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='12' %}
+      <li><a href='/convenor/students'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='12view' %}
+      <li><a href='/convenor/students'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='11' %}
+      <li><a href='/chair/grade/task'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='13' %}
+      <li><a href='/chair/students'>Exit Report</a></li>
+      {% endif %}
+      <!-- this part is for chair to take action on Section F -->
+      {% if routing =='14' %}
+      <li><a href='/chair/grade/task'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='14chairview' %}
+      <li><a href='/chair/students'>Exit Report</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="card">
+
+    <h4 class="info-title">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+
+    <h3 class="section-title">Section D - Assessment by student and supervisors</h3>
+    <ul class="section-intro">
+      <li>This is an assessment of your progress and will be included in your postgraduate record. It is intended
+        primarily to assist you to plan and carry out your study.
+        The assessment is a documented record of your study and will illustrate your ability to define and achieve
+        objectives. </li>
+      <li>Complete this after discussing it with your supervisor. </li>
+      <li>Ensure you note and address any deviations from the standard 3-year PhD timeline. Add additional rows to these
+        tables as necessary.</li>
+    </ul>
+
+    <h3 class="title">Research Objectives</h3>
+    <p>Report on your Research Objectives for the last Six Months</p>
+    {% if Objectives %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Research Objectives</th>
+          <th>Status (Complete or Incomplete)</th>
+          <th>Comments – Explain, where relevant, why particular activities are not completed</th>
+          <th>Any changes to objectives. If so, why?</th>
+        </tr>
+      </thead>
+      <tbody id="first-objective-body">
+        {% set Row_num =namespace(ns=1) %}
+        {% for Objective in Objectives %}
+        <tr>
+          <td>{{Row_num.ns}}</td>
+          <td>{{Objective[0]}}</td>
+          <td>{{Objective[1]}}</td>
+          <td>{{Objective[2]}} </td>
+          <td>{{Objective[3]}} </td>
+          {% set Row_num.ns = Row_num.ns+1 %}
+        </tr>
+
+        {% endfor %}
+    </table>
+    {% else %}
+    <h3 class="no-record">Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+    <hr>
+    <h3 class="title">Effects Of COVID-19</h3>
+    <p>Evaluation of effects of COVID-19 on research progress
+      (Detail any effects on your research plan of impacts such as travel restrictions, university closure including
+      office or lab access, participant survey opportunities, financial hardship and social, emotional and mental
+      well-being.)
+    </p>
+    {% if Covids %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Covid Comment</th>
+        </tr>
+      </thead>
+      <tbody id="first-objective-body">
+
+        {% set Row_num =namespace(ns=1) %}
+        {% for Covid in Covids %}
+        <tr>
+          <td>{{Row_num.ns}}</td>
+          <td>{{Covid[0]}}</td>
+          {% set Row_num.ns = Row_num.ns+1 %}
+        </tr>
+
+        {% endfor %}
+    </table>
+    {% else %}
+    <h3 class="no-record">Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+    <hr>
+    <h3 class="title">Other Significant Academic Achievements</h3>
+    <p>Other Significant Academic Achievements in the last Six Months
+      (List other achievements including conference presentations, publications, workshops, posters etc)
+    </p>
+    {% if Achievements %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Achievement</th>
+        </tr>
+      </thead>
+      <tbody id="first-objective-body">
+
+        {% set Row_num =namespace(ns=1) %}
+        {% for Achievement in Achievements %}
+        <tr>
+          <td>{{Row_num.ns}}</td>
+          <td>{{Achievement[0]}} </td>
+
+          {% set Row_num.ns = Row_num.ns+1 %}
+        </tr>
+
+        {% endfor %}
+    </table>
+    {% else %}
+    <h3 class="no-record">Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+    <hr>
+    <h3 class="title">Research Objectives</h3>
+    <p>Research Objectives for the next Six Months</p>
+    {% if Sec4_obejcitves %}
+    <table class="table  table-hover">
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Objective</th>
+          <th>Target</th>
+          <th>Problem</th>
+        </tr>
+      </thead>
+      <tbody id="first-objective-body">
+
+        {% set Row_num =namespace(ns=1) %}
+        {% for item in Sec4_obejcitves %}
+        <tr>
+          <td>{{Row_num.ns}}</td>
+          <td>{{item[2]}} </td>
+          <td>{{item[3]}} </td>
+          <td>{{item[4]}} </td>
+          {% set Row_num.ns = Row_num.ns+1 %}
+        </tr>
+
+        {% endfor %}
+    </table>
+
+    {% else %}
+    <h3 class="no-record">Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+
+    <hr>
+    <h3 class="title">Expected Research Expenditure</h3>
+    <p>Expected Research Expenditure for the next Six Months</p>
+    {% if Sec5_obejcitves %}
+    <table class="table last table-hover">
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Item</th>
+          <th>Amount</th>
+          <th>Note</th>
+        </tr>
+      </thead>
+      <tbody id="first-objective-body">
+
+        {% set Row_num =namespace(ns=1) %}
+        {% for item in Sec5_obejcitves %}
+        <tr>
+          <td>{{Row_num.ns}}</td>
+          <td>{{item[2]}} </td>
+          <td>{{item[3]}} </td>
+          <td>{{item[4]}} </td>
+          {% set Row_num.ns = Row_num.ns+1 %}
+        </tr>
+
+        {% endfor %}
+    </table>
+
+
+
+
+    {% else %}
+    <h3>Sorry, This student didn't submit this part.</h3>
+    {% endif %}
+
+    {% if routing == 'check-supervisors'%}
+
+    <div class="supervisor-part">
+    <h3 class="section-title">Confirm or Reject Student's Submission</h3>
+    <form action="/supervisor/view_reports?report_id={{report_id}}" method="POST">
+      <h6>Choose Your Decision:</h6>
+      <input type="radio" id="confirmRadio" name="confirmation" value="confirm">
+      <label for="confirmRadio">Confirm</label>
+      <input type="radio" id="rejectRadio" name="confirmation" value="reject">
+      <label for="rejectRadio">Reject</label><br><br>
+      <h6>Your Feedback:</h6>
+      <textarea id="reject_message" name="reject_message" rows="5" cols="70" placeholder="Write your feedback if you want..."></textarea><br><br>
+
+      <input type="hidden" id="reportIDinput" value="{{report_id}}">
+
+      <button class="btn" name="confirm-reject" type="submit">Submit</button>
+    </form>
+      </div>
+
+    {% endif %}
+
+  </div>
+</main>
+<style>
+  .employ-form input[type="text"] {
+    width: 80%;
+  }
+
+  .card {
+    border-top: none;
+    border-radius: 0;
+  }
+
+  td,
+  th {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td,
+  th {
+    text-align: center;
+  }
+
+  .dialog {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid black;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .dialog p {
+    margin-bottom: 10px;
+  }
+
+  .section-intro li {
+    list-style: square;
+    list-style-position: inside;
+  }
+
+  .last {
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .supervisor-part{
+    border: 1px solid #38998F;
+    padding: 10px;
+    border-radius: 5px;
+    margin:30px 0;
+  }
+
+  h6{
+  font-size:16px;
+  }
+</style>
+
+{% if routing == 'check-supervisors' %}
+<script>
+  function showMessage() {
+    alert(`WARNING! You have not accept or reject this student's submission`);
+  }
+</script>
+{% endif %}
+
+
+
+
+{% endblock %}

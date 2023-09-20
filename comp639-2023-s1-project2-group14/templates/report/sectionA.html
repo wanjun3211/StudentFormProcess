@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+    {% if routing == 'check-supervisors'%}
+    <div class="alert alert-warning" role="alert">Make sure to review all sections and confirm the report in Section D
+        once you are ready</div>
+    {% elif routing == 'filling-sectionE'%}
+    <div class="alert alert-warning" role="alert">Make sure to review all sections and fill in the sectionE when you are
+        in Section D.
+    </div>
+
+    {% endif %}
+
+    <div class="breadcrumbs">
+        <ul class="nav nav-tabs">
+            <li {% if section=='sectionA' %} class="active" {% endif %}><a
+                    href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a>
+            </li>
+            <li {% if section=='sectionB' %} class="active" {% endif %}><a
+                    href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a>
+            </li>
+            <li {% if section=='sectionC' %} class="active" {% endif %}><a
+                    href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a>
+            </li>
+            <li {% if section=='sectionD' %} class="active" {% endif %}><a
+                    href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a>
+            </li>
+            {% if routing != 'check-supervisors' and routing != 'view-supervisors-other' and routing !=
+            'filling-sectionE' %}
+            <li {% if section=='sectionE' %} class="active" {% endif %}><a
+                    href="/view_report/sectionE?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section E</a>
+            </li>
+            <li {% if section=='sectionF' %} class="active" {% endif %}><a
+                    href="/view_report/sectionF?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section F</a>
+            </li>
+            {% endif %}
+            {% if routing == '1' %}
+            <li><a href='/admin/send_reminder?report=done'>Exit Report</a></li>
+            {% elif routing == 'student-part' %}
+            <li><a href='/student/history_report'>Exit Report</a></li>
+            {% elif routing == 'view-supervisors' or routing == 'finish-sectionE' or routing == 'filling-sectionE' %}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+            {% elif routing == 'view-supervisors-other' %}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+            {% elif routing == 'check-supervisors'%}
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}' onclick="showMessage()">Exit Report</a></li>
+            {% elif routing == 'done_report' %}
+            <li><a href='/admin/send_reminder?report=completed'>Exit Report</a></li>
+            {% elif routing == 'admin-part' %}
+            <li><a href='/student/history_report?report_id={{report_id}}'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='12' %}
+            <li><a href='/convenor/students'>Exit Report</a></li>
+            {% endif %}
+            <!-- this part is for chair to grade on Sectin E -->
+            {% if routing =='11' %}
+            <li><a href='/chair/grade/task'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='13' %}
+            <li><a href='/chair/students'>Exit Report</a></li>
+            {% endif %}
+            <!-- this part is for chair to take action on Section F -->
+            {% if routing =='14' %}
+            <li><a href='/chair/grade/task'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='14chairview' %}
+            <li><a href='/chair/students'>Exit Report</a></li>
+            {% endif %}
+            {% if routing =='12view' %}
+            <li><a href='/convenor/students'>Exit Report</a></li>
+            {% endif %}
+
+        </ul>
+    </div>
+    
+    <div class="card">
+
+        <h4 class="info-title">Faculty of Environment Society and Design</h4>
+        <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+
+        <h3 class="section-title">Section A – Student Record</h3>
+        <h3 class="title">Personal Details</h3>
+        {% for student in students_list %}
+        <div class="row">
+
+
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Full name</small>
+                    <span>{{student[0]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Student ID</small>
+                    <span>{{student[1]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Enrolment Date</small>
+                    <span>{{student[2]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Current Address</small>
+                    <span>{{student[3]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Phone</small>
+                    <span>{{student[4]}} </span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Email LU</small>
+                    <span>
+                        {{student[5]}}
+                    </span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Study
+                        Type</small><span>{{student[6]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Thesis Title</small>
+                    <span>{{student[7]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+        </div>
+        {% endfor %}
+
+        <h3 class="title">Supervision Team</h3>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Main Supervisor</small>
+                    <span>{{supervisor_list[0]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Associate
+                        Supervisor</small>
+                    <span>{{supervisor_list[1]}}</span>
+                </div>
+
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Other Supervisor</small>
+                    <span>{{supervisor_list[2]}}</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="title">Scholarships Held </h3>
+        {% if scholar_list %}
+        {% for scholars in scholar_list %}
+        {% if loop.index != 1 %}
+        <hr> {% endif %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Name</small>
+                    <span>{{scholars[0]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Value</small>
+                    <span>{{scholars[1]}}</span>
+                </div>
+
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Tenure</small>
+                    <span>{{scholars[2]}}</span>
+                </div>
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">End Date</small>
+                    <span>{{scholars[3]}}</span>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+        {% else %}
+        <h3 class="no-record">This student has no scholarship record.</h3>
+        {% endif %}
+
+        <h3 class="title">Employment at LU </h3>
+        {% if employment_list %}
+        {% for employment in employment_list %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Teaching</small>
+                    <span>{{employment[1]}}</span>
+                </div>
+                <!-- /.contact-details-cell -->
+            </div>
+        </div>
+        <div class="row">
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Research</small>
+                    <span>{{employment[2]}}</span>
+                </div>
+
+            </div>
+            <!-- /.col-md-6 -->
+            <div class="col-md-6">
+                <div class="contact-details-cell"><small class="heading-font-family fw-500">Other</small>
+                    <span>{{employment[3]}}</span>
+                </div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+        {% else %}
+        <h3 class="no-record">This student has no employment record.</h3>
+
+        {% endif %}
+    </div>
+</main>
+<style>
+    .employ-form input[type="text"] {
+        width: 80%;
+    }
+
+    .contact-details-cell {
+        border: 1px solid #eef1f2;
+        margin-bottom: 6px;
+        padding: 20px 22px 18px;
+        overflow: hidden;
+        color: #666;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .contact-details-cell span {
+        flex: 1;
+        align-self: flex-end;
+        font-size: 1.1em;
+        margin: 0;
+        text-align: right;
+        color: #666;
+    }
+
+    .card {
+        border-top: none;
+        border-radius: 0;
+    }
+
+    .mr-b-20 {
+        font-size: 1.5rem;
+    }
+
+    .show {
+        border-radius: 6.25rem;
+        margin: 30px 10px;
+        width: 100%;
+    }
+
+    small {
+        color: #999;
+        font-size: 1em;
+    }
+</style>
+
+{% if routing == 'check-supervisors' %}
+<script>
+    function showMessage() {
+        alert('WARNING! You are exiting the report before checking all sections!');
+    }
+</script>
+{% endif %}
+
+
+
+{% endblock %}

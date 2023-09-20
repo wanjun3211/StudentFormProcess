@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+<main>
+
+  {% if user_role == 'admin' %}
+  <!-- <h5>this is an admin role</h5> -->
+  {% endif %}
+
+  {% if user_role %}
+  <div class="dashboard">
+    <!-- Reminder Session -->
+
+  {% if reminder_result or reject_message or confirm_message %}
+    <div class="reminder-container">
+      <h2>Reminder</h2>
+      {% include 'reminder.html'%}
+      {% include 'supervisor_check.html' %}
+    </div>
+
+  {% endif %}
+
+  
+
+    <!-- ======= About Section ======= -->
+    <section id="about" class="about">
+      <div data-aos="fade-up">
+
+        <div class="row">
+          <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+            <img src="static/images/index.jpg" class="img-fluid" alt="Home Image">
+            <p><cite>The Photo</cite> from Lincoln University website.</p>
+          </div>
+          <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
+            <h3>The Faculty of Environment, Society and Design.</h3>
+            <p class="fst-italic">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+              dolore
+              magna aliqua.
+            </p>
+            <ul>
+              <li><i class="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat.</li>
+              <li><i class="bi bi-check-circle"></i> Duis aute irure dolor in reprehenderit in voluptate velit.</li>
+              <li><i class="bi bi-check-circle"></i> Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                irure dolor in reprehenderit in voluptate trideta storacalaperda mastiro dolore eu fugiat nulla
+                pariatur.</li>
+            </ul>
+            <p>
+              Ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+              voluptate
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End About Section -->
+
+
+
+    <!-- ======= Events Section ======= -->
+    <!-- ======= Breadcrumbs ======= -->
+    <div class="course" data-aos="fade-in">
+      <div>
+        <h2>Course</h2>
+        <p>Est dolorum ut non facere possimus quibusdam eligendi voluptatem. Quia id aut similique quia voluptas sit
+          quaerat debitis. Rerum omnis ipsam aperiam consequatur laboriosam nemo harum praesentium. </p>
+      </div>
+    </div><!-- End Breadcrumbs -->
+    <section id="events" class="events">
+      <div data-aos="fade-up">
+
+        <div class="row">
+          <div class="col-md-6 d-flex align-items-stretch">
+            <div class="card">
+              <div class="card-img">
+                <img src="static/images/events-1.jpg" alt="...">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title"><a href="">Introduction to webdesign</a></h5>
+                <p class="fst-italic text-center">Sunday, September 26th at 7:00 pm</p>
+                <p class="card-text">Lorem ipsum dolor sit amet, consectetur elit, sed do eiusmod tempor ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                  aliquip ex ea commodo consequat</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-stretch">
+            <div class="card">
+              <div class="card-img">
+                <img src="static/images/events-2.jpg" alt="...">
+              </div>
+              <div class="card-body">
+                <h5 class="card-title"><a href="">Marketing Strategies</a></h5>
+                <p class="fst-italic text-center">Sunday, November 15th at 7:00 pm</p>
+                <p class="card-text">Sed ut perspiciatis unde omnis iste natus error sit voluptatem doloremque
+                  laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae
+                  vitae dicta sunt explicabo</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Events Section -->
+
+
+  </div>
+  <!-- FOOTER -->
+  <footer class="footer-part">
+    <div class="container-fluid"><span>Copyright @ 2023. All rights reserved by Lincoln University</span>
+    </div>
+  </footer>
+  {% else %}
+  <div class="log-text">
+    You are not logged in.
+    <a href="{{ url_for('login') }}">Click here</a> to login.
+  </div>
+  {% endif %}
+
+
+
+
+</main>
+
+
+
+<style>
+  main {
+    margin-left: 230px;
+    height: 100%;
+    position: relative;
+  }
+
+
+  .dashboard {
+    margin-left: 40px;
+  }
+
+  body {
+    background: #F0F1F1;
+  }
+
+  .reminder-container {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px #aaaaaa;
+  }
+
+  .order-lg-2 p {
+    text-align: center;
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+<!-- Banner for Supervisor's check Notifications -->
+
+{% if report_check %}
+    <div class="report-check">
+        {% for check in report_check %}
+            {% if check[1] == 'reject' %}
+            <div class="alert alert-danger">
+                <strong>Your {{check[3]}} term report has been rejected!</strong>
+            </div>
+            <div class="content">
+                <h3>Feedback from Main Supervisor</h3>
+                <p>{{check[2]}}</p>
+            </div>
+
+            <p> Note: This message will stay here until you have resubmit the report for review</p>
+         
+            {% elif check[1] == 'confirm'%}
+            <div class="alert alert-success" role="alert">
+               <strong>Your {{check[3]}} term report has been approved by your main supervisor. 
+                The report is currently being filled by your supervisor(s).</strong>
+            <a href="/acknowledge?report_id={{check[0]}}&action=0"  type="submit">
+                 <i class="fa-solid fa-xmark"></i>
+            </a>
+                 </div>
+            {% elif check[1] == 'in progress' %} 
+            <div class="alert alert-success" role="alert">
+                <strong>Your {{check[3]}} term report has been resend to your main supervisor for approval.</strong>
+
+             <a href="/acknowledge?report_id={{check[0]}}&action=1" type="submit">
+                <i class="fa-solid fa-xmark"></i>
+            </a>
+                </div>
+
+            {% elif check[1] == 'checked' %}
+            <div></div>
+            {% endif %}
+            
+
+            
+        {% endfor %}
+    </div>
+    {% else %}
+    <p></p>
+
+
+
+{% endif %}
+
+<style>
+    .btn{
+float:right;
+}
+
+.fa-xmark {
+font-size:24px;
+color:#993333;
+}
+
+.report-check a {
+float:right;
+}
+
+.report-check i:hover  {
+color:#38998F;
+}
+
+</style>

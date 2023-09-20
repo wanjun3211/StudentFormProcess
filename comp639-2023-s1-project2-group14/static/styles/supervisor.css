@@ -1,0 +1,13 @@
+.table>thead>tr>th,
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+tr {
+    height: 50px;
+    line-height: 50px;
+}
+
+.breadcrumb {
+    background: none;
+}

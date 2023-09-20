@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+  {% if message %}
+  {% if alertStyling == "Red" %}
+  <div class="alert alert-danger" role="alert">
+    {% elif alertStyling == "Green" %}
+    <div class="alert alert-success" role="alert">
+      {% elif alertStyling == "Yellow" %}
+      <div class="alert alert-warning" role="alert">
+        {% else %}
+        <div>
+          {% endif %}
+
+          {{message}}</div>
+        {% endif %}
+
+
+        <ul class="nav nav-tabs">
+          <li><a href="/student/report/intro" {% if progress_id> 1 %} {% elif progress_id == 1
+              %}onclick="confirmBeforeMovingOn()"{% endif%}">Report Intro</a></li>
+          <li {% if section=='sectionA' %} class="active" {% endif %}><a
+              href="/student/report/sectionA?term={{term}}">Section A</a></li>
+          <li {% if section=='sectionB' %} class="active" {% endif %}><a href="/student/report/sectionB?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              B</a></li>
+          <li {% if section=='sectionC' %} class="active" {% endif %}><a href="/student/report/sectionC?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              C</a></li>
+          <li {% if section=='sectionD' %} class="active" {% endif %}><a href="/student/report/sectionD?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              D</a></li>
+          <li {% if section=='sectionF' %} class="active" {% endif %}><a href="/student/report/sectionF?term={{term}}"
+              {% if progress_id> 1 %} {% elif progress_id == 1 %}onclick="confirmBeforeMovingOn()"{% endif%}">Section
+              F</a></li>
+        </ul>
+
+        <div class="card">
+
+          {% if sectionF == [] and progress_id > 1 %}
+          <div class="alert alert-danger" role="alert"> Nothing was filled in this section by the student</div>
+          {% else %}
+
+          <!-- Warning bar for each section -->
+          {% if progress_id > 1 and progress_id < 6%} <div class="alert alert-danger" role="alert"> You cannot edit this
+            page as it is currently being processed by
+            {% if progress_id == 2 %}
+            supervisor
+            {%elif progress_id == 3%}
+            Convenor
+            {% elif progress_id == 5%}
+            admin
+            {% endif%}
+        </div>
+
+        {% endif %}
+
+        {% if progress_id == 6 %}
+        <div class="alert alert-warning" role="alert">The report is completed and this cannot be edited</div>
+        {% endif %}
+
+
+        <!-- Progress bar for each section -->
+    {% if progress_id != 1 %}
+     <h4>Report Finished Role:</h4>
+    {% if progress_id == 2 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+    {% elif progress_id == 3 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+    {% elif progress_id == 5 %}
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+    {% elif progress_id == 6 %}
+        <span>Congratulations, this report has been completed.</span>
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">Student</div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">Supervisors</div>
+            <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">Convenor</div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">Admin</div>
+    {% endif %}
+        </div>
+        {% endif %}
+
+
+                <h4 class="faculty">Faculty of Environment Society and Design</h4>
+                <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+                <h3 class="section-title">Section F</h3>
+                <h4>Student Assessment of Supervision, Technical and Administrative Support</h4>
+                <ul class="section-intro">
+                  <li>This section is to be sent to the Faculty Postgraduate Chair. It can be used for <strong>positive
+                      and/or negative</strong> comments.</li>
+
+                  <li>If you feel it is inappropriate that this form should go to your Faculty Postgraduate Chairperson
+                    for whatever reason, then you may send it directly to the Postgraduate Director, Dr. Andrew Holyoake
+                    (see intro page).</li>
+
+                  <li>It is very important that you identify and write down any concerns you have about your
+                    supervisor(s), technical or administrative staff even when you feel this may be inappropriate (e.g.,
+                    for cultural reasons). You should not feel powerless to identify your concerns.</li>
+
+                  <li>Information on this form is confidential to the Faculty Postgraduate Chair (or the Postgraduate
+                    Director) and <strong>will not</strong> automatically be shown to your supervisors, technical or
+                    administrative staff. However, we are not allowed by law to withhold these forms from people
+                    mentioned in them should they request them (see intro page). For this reason, you may prefer to
+                    <strong>discuss</strong> the problem(s) instead of/before committing them to paper. The best way to
+                    prevent small problems becoming big ones is to discuss the ‘Mutual Expectations Agreement’ document
+                    (see section B) with your supervisor(s) as well as any incipient supervisor problems. If these
+                    routes fail, then the other options available to you are mentioned above.</li>
+
+                  <li>The Faculty Postgraduate Chair (or the Postgraduate Director) will contact you to discuss any
+                    issues if you tick the box at the bottom of this form. Through this discussion, the most appropriate
+                    course of subsequent action will be discussed with you. Unlike the form itself, the details of these
+                    oral discussions will remain confidential.</li>
+
+                  <li>Always keep a copy of this form when completed, for your own record.</li>
+                </ul>
+
+                <h3>Student Information</h3>
+                <form method="POST" action="/student/report/sectionF" id="form_file">
+                  <p><strong>Student Name:</strong> {{user_name}}</p>
+
+                  <label for="supervisor-name">Supervisor(s) Name(s):</label>
+                  <select class="custom-select" id="supervisor-name" name="supervisor-name">
+                    {% for supervisor in supervisor_list %}
+                    <option value="{{supervisor[0]}}" {% if sectionF %}{% if sectionF[1]==supervisor[0] %} selected {%
+                      endif %}{% endif %} {% if sectionF[4]=='Submitted' or progress_id> 1 %}disabled{% endif %} 
+                      >{{supervisor[1]}}</option>
+                    {% endfor %}
+                  </select><br><br>
+
+                  <label for="comments">Comments:</label><br>
+                  <textarea id="comments" required name="comments" rows="10" cols="100" 
+                  {% if sectionF %}{% if sectionF[4] == 'Submitted' or progress_id > 1 %}readonly{% endif %}{% endif %} placeholder="Enter your comments here...">
+                    {% if sectionF %}
+                      {{ sectionF[2] }}
+                    {% endif %}
+                  </textarea><br><br>
+
+                  <p>Yes, I want to talk to the (identify which by circling the relevant one):</p>
+                  <label>
+                    <input type="radio" name="contact-person" value="a" {% if sectionF %} {% if sectionF[3]=='a'
+                      %}checked{% endif %} {% if sectionF[4]=='Submitted' or progress_id> 1%}disabled{% endif %}{% endif
+                    %} >
+                    Faculty Postgraduate Chair
+                  </label>
+                  <label>
+                    <input type="radio" name="contact-person" value="b" {% if sectionF %} {% if sectionF[3]=='b'
+                      %}checked{% endif %} {% if sectionF[4]=='Submitted' or progress_id> 1%}disabled{% endif %} {%
+                    endif %}>
+                    Academic Administration Convenor
+                  </label><br><br>
+
+                  {% if not sectionF or sectionF[4] =='Draft' %}
+                  <div class="update-button">
+                    <p class="note save-draft">Once you have saved your draft, you can edit your content at any time.</p>
+                    <input class="btn btn-right" type="submit" name="submit" id="save" value="Save Draft" {% if
+                      progress_id> 1 %}disabled{% endif %}>
+                    <input type="hidden" name="term" value="{{term}}">
+                    <!-- <input class="btn btn-right" type="submit" name="submit" id="submit" value="Submit"   {% if  progress_id > 1 %}disabled{% endif %}> -->
+                    <a href="/student/report/sectionF">
+                      <button class="btn" name='submit-all' type="submit" onclick="submitConfirmation()" {% if
+                        progress_id> 1 %}disabled{% endif %}>Submit</button>
+                    </a>
+                  </div>
+                  {% endif %}
+
+
+
+                </form>
+
+                {% endif %}
+
+
+              </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+
+<style>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    text-align: center;
+  }
+
+  .section-intro li {
+    list-style: square;
+    list-style-position: inside;
+  }
+
+  .custom-select {
+    width: 250px;
+    height: 40px;
+    margin-left: 10px;
+  }
+
+  form strong {
+    margin-right: 10px;
+  }
+
+  label {
+    padding-right: 20px;
+  }
+</style>
+
+<script>
+  function submitConfirmation() {
+    const confirmation = confirm("Do you want to submit the form?\n\nMake sure that you have checked all sections before submiting.");
+
+    if (confirmation) {
+      // Submit the form
+      document.getElementById("form_file").submit();
+    } else {
+      event.preventDefault();
+    }
+  }
+
+  document.getElementById('myForm').addEventListener('submit', function(e) {
+    var textarea = document.getElementById('comments');
+    textarea.value = textarea.value.trim();
+  });
+</script>
+
+
+{% endblock %}

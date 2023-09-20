@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+  <div class="breadcrumbs">
+    <ul class="nav nav-tabs">
+      <li {% if section=='sectionA' %} class="active" {% endif %}><a
+          href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a></li>
+      <li {% if section=='sectionB' %} class="active" {% endif %}><a
+          href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a></li>
+      <li {% if section=='sectionC' %} class="active" {% endif %}><a
+          href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a></li>
+      <li {% if section=='sectionD' %} class="active" {% endif %}><a
+          href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a></li>
+      <li {% if section=='sectionE' %} class="active" {% endif %}><a
+          href="/view_report/sectionE?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section E</a></li>
+      <li {% if section=='sectionF' %} class="active" {% endif %}><a
+          href="/view_report/sectionF?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section F</a></li>
+      {% if routing == '1' %}
+      <li><a href='/admin/send_reminder?report=done'>Exit Report</a></li>
+      {% elif routing == 'student-part' %}
+            <li><a href='/student/history_report'>Exit Report</a></li>
+
+      {% elif routing == 'view-supervisors' or routing == 'finish-sectionE'%}
+      <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+
+
+      {% elif routing == 'done_report' %}
+      <li><a href='/admin/send_reminder?report=completed'>Exit Report</a></li>
+      {% elif routing == 'admin-part' %}
+            <li><a href='/student/history_report?report_id={{report_id}}'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='12' %}
+      <li><a href='/convenor/students'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='12view' %}
+      <li><a href='/convenor/students'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='11' %}
+      <li><a href='/chair/grade/task'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='13' %}
+      <li><a href='/chair/students'>Exit Report</a></li>
+      {% endif %}
+      <!-- this part is for chair to take action on Section F -->
+      {% if routing =='14' %}
+      <li><a href='/chair/grade/task'>Exit Report</a></li>
+      {% endif %}
+      {% if routing =='14chairview' %}
+      <li><a href='/chair/students'>Exit Report</a></li>
+      {% endif %}
+
+    </ul>
+  </div>
+
+  <div class="card">
+    {% if user_role =='chair' or user_role =='student' %}
+    {% if sectionF %}
+    <h4 class="info-title">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h3 class="section-title">Section F</h3>
+    <h4>Student Assessment of Supervision, Technical and Administrative Support</h4>
+
+    <ul class="section-intro">
+      <li>This section is to be sent to the Faculty Postgraduate Chair. It can be used for <strong>positive
+          and/or negative</strong> comments.</li>
+
+      <li>If you feel it is inappropriate that this form should go to your Faculty Postgraduate Chairperson
+        for whatever reason, then you may send it directly to the Postgraduate Director, Dr. Andrew Holyoake
+        (see intro page).</li>
+
+      <li>It is very important that you identify and write down any concerns you have about your
+        supervisor(s), technical or administrative staff even when you feel this may be inappropriate (e.g.,
+        for cultural reasons). You should not feel powerless to identify your concerns.</li>
+
+      <li>Information on this form is confidential to the Faculty Postgraduate Chair (or the Postgraduate
+        Director) and <strong>will not</strong> automatically be shown to your supervisors, technical or
+        administrative staff. However, we are not allowed by law to withhold these forms from people
+        mentioned in them should they request them (see intro page). For this reason, you may prefer to
+        <strong>discuss</strong> the problem(s) instead of/before committing them to paper. The best way to
+        prevent small problems becoming big ones is to discuss the ‘Mutual Expectations Agreement’ document
+        (see section B) with your supervisor(s) as well as any incipient supervisor problems. If these
+        routes fail, then the other options available to you are mentioned above.
+      </li>
+
+      <li>The Faculty Postgraduate Chair (or the Postgraduate Director) will contact you to discuss any
+        issues if you tick the box at the bottom of this form. Through this discussion, the most appropriate
+        course of subsequent action will be discussed with you. Unlike the form itself, the details of these
+        oral discussions will remain confidential.</li>
+
+      <li>Always keep a copy of this form when completed, for your own record.</li>
+    </ul>
+    <h3>Student Information</h3>
+    <form>
+      <p><strong>Student Name:</strong>{{supervisor_list[0][2] | capitalize }}</p>
+      <label for="supervisor-name">Supervisor(s) Name(s):</label>
+      <select class="custom-select" id="supervisor-name" name="supervisor-name">
+        {% for supervisor in supervisor_list %}
+        <option value="{{supervisor[0]}}" {% if sectionF[1]==supervisor[0] %} selected {% endif %} disabled>
+          {{supervisor[1]}}</option>
+        {% endfor %}
+      </select><br><br>
+      <label for="comments">Comments:</label><br>
+      <textarea id="comments" name="comments" rows="10" cols="100" readonly>{{ sectionF[2] }}</textarea><br><br>
+
+      <p>Yes, I want to talk to the (identify which by circling the relevant one):</p>
+      <label>
+        <input type="radio" name="contact-person" value="a" {% if sectionF[3]=='a' %}checked{% endif %} disabled>
+        Faculty Postgraduate Chair
+      </label>
+      <label>
+        <input type="radio" name="contact-person" value="b" {% if sectionF[3]=='b' %}checked{% endif %} disabled>
+        Academic Administration Convenor
+      </label><br><br>
+      {% else %}
+      <h3>Sorry, This student didn't submit sectionF</h3>
+      {% endif %}
+
+      {% else %}
+      <h3 class="no-record">Sorry, you don't have permission to view this section.</h3>
+      {% endif %}
+    </form>
+
+
+<!-- chair part for act on Section F-->
+
+{% if routing =='14'%}
+<form method="POST" action="/chair/send_reminder_sectionF">
+  <span>Chair comment</span>
+  <textarea id="Chair_Comment" name="Chair_Comment" class="form-control" aria-label="With textarea"
+    required></textarea>
+  <input type="hidden" id='Report_ID' name='Report_ID' value={{report_id}}>
+  <br>
+  <button class="btn-update" type="submit">Submit</button>
+</form>
+{% endif %}
+  </div>
+</main>
+
+
+<style>
+  .card {
+    border-top: none;
+    border-radius: 0;
+  }
+
+
+  .section-intro li {
+    list-style: square;
+    list-style-position: inside;
+  }
+
+  .custom-select {
+    width: 250px;
+    height: 40px;
+    margin-left: 10px;
+  }
+
+  form strong {
+    margin-right: 10px;
+  }
+
+  label {
+    padding-right: 20px;
+  }
+</style>
+
+
+{% endblock %}

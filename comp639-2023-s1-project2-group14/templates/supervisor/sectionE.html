@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+    {% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+    <div class="card">
+        {% if message %}
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+
+            {{message}}</div>
+        {% endif %}
+
+
+    <div class="breadcrumbs">
+        <ul class="nav nav-tabs">
+            <li {% if section=='sectionA' %} class="active" {% endif %}><a
+                    href="/view_report/sectionA?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section A</a>
+            </li>
+            <li {% if section=='sectionB' %} class="active" {% endif %}><a
+                    href="/view_report/sectionB?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section B</a>
+            </li>
+            <li {% if section=='sectionC' %} class="active" {% endif %}><a
+                    href="/view_report/sectionC?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section C</a>
+            </li>
+            <li {% if section=='sectionD' %} class="active" {% endif %}><a
+                    href="/view_report/sectionD?report_id={{report_id}}&term={{term}}&routing={{routing}}">Section D</a>
+            </li>
+            <li {% if section=='sectionE' %} class="active" {% endif %}><a  href="/supervisor/sectionE?report_id={{report_id}}">Fill Section E</a></li>
+            <li><a href='/supervisor/view_reports?report_id={{report_id}}'>Exit Report</a></li>
+
+        </ul>
+                </div>
+     <h4 class="info-title">Faculty of Environment Society and Design</h4>
+    <h2 class="info-title">PhD Student 6-Month Report Form</h2>
+    <h3 class="section-title">Section E – Assessment of Student by Supervisor(s)</h3>
+         <ul class="section-intro">
+             <li>This form will remain confidential to the Supervisor(s), Student, Faculty Postgraduate Administrator / Chairperson and Faculty Dean (or nominee). </li>
+             <li>Note that external supervisors/advisors/Tuakana are required to complete this assessment form where the student is working primarily offsite.</li>
+
+             <li>Supervisors are required to use this form to comment on students at six-monthly intervals, but this form may be used at any time if problems arise. </li>
+             <li>Students will subsequently receive a copy of these forms with supervisors’ comments on them. </li>
+             <li>If the student is unhappy with these comments they can approach the Faculty Postgraduate Chairperson (or the LU Postgraduate Director, see page 1) to discuss the issue. </li>
+             <li>If the student’s progress is unsatisfactory in a major way, without prospects of resolution, further action may be taken (see the PhD House Rules).</li>
+        </ul>
+
+         <p><strong>Student Name:</strong> {{student_info[0][0]}}</p>
+        <p><strong>Student ID:</strong>{{student_info[0][1]}}</p>
+        <h3 class="subsection-title">Supervisor Name: {{user_name}}</h3>
+        <div class="supervisor-part">
+            <form method="POST" action="/supervisor/sectionE">
+                    <div class="form-group">
+                        <label for="supervisor_answer1">Question 1: How do you rate the student’s overall progress in the last 6 months</label>
+                        <select class="form-control" id="supervisor_answer1" name="supervisor_answer1" required>
+                            <option class="first-option" value="" disabled selected>Select an option...</option>
+                            <option value="Excellent">Excellent</option>
+                            <option value="Good" >Good</option>
+                            <option value="Satisfactory">Satisfactory</option>
+                            <option value="Below Average">Below Average</option>
+                            <option value="Unsatisfactory">Unsatisfactory</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor_answer2">Question 2: How do you rate the student’s overall progress in terms of the 3-year PhD track</label>
+                        <select class="form-control" id="supervisor_answer2" name="supervisor_answer2" required>
+                            <option class="first-option" value="" disabled selected>Select an option...</option>
+                            <option value="Excellent" >Excellent</option>
+                            <option value="Good"  >Good</option>
+                            <option value="Satisfactory">Satisfactory</option>
+                            <option value="Below Average" >Below Average</option>
+                            <option value="Unsatisfactory" >Unsatisfactory</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor_answer3">Question 3: How would you rate the quality of the student’s academic work, e.g., research writing</label>
+                        <select class="form-control" id="supervisor_answer3" name="supervisor_answer3" required>
+                            <option class="first-option" value="" disabled selected>Select an option...</option>
+                            <option value="Excellent" >Excellent</option>
+                            <option value="Good" >Good</option>
+                            <option value="Satisfactory" >Satisfactory</option>
+                            <option value="Below Average" >Below Average</option>
+                            <option value="Unsatisfactory" >Unsatisfactory</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor_answer4">Question 4: Student’s technical skill/s to complete the project</label>
+                        <select class="form-control" id="supervisor_answer4" name="supervisor_answer4" required>
+                            <option  class="first-option" value="" disabled selected>Select an option...</option>
+                            <option value="Excellent" >Excellent</option>
+                            <option value="Good" >Good</option>
+                            <option value="Satisfactory" >Satisfactory</option>
+                            <option value="Below Average" >Below Average</option>
+                            <option value="Unsatisfactory" >Unsatisfactory</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="supervisor_answer5">Question 5: How would you rate the student’s likelihood of achieving the next 6-months objectives</label>
+                        <select class="form-control" id="supervisor_answer5" name="supervisor_answer5" required>
+                            <option class="first-option" value="" disabled selected>Select an option...</option>
+                            <option value="Excellent" >Excellent</option>
+                            <option value="Good" >Good</option>
+                            <option value="Satisfactory" >Satisfactory</option>
+                            <option value="Below Average" >Below Average</option>
+                            <option value="Unsatisfactory" > Unsatisfactory</option>
+                        </select>
+                    </div>
+                <div class="form-group">
+
+
+                        <p>If a progress review meeting has taken place in the period covered by this report, have any recommendations from that meeting been carried out?</p>
+                        <label>
+                          <input type="radio" name="progress_review" value="yes" required> YES
+                        </label>
+                        <label>
+                          <input type="radio" name="progress_review" value="no" required> NO
+                        </label>
+                        <label>
+                          <input type="radio" name="progress_review" value="N/A" required> N/A
+                        </label>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor_comments">Comments:</label>
+                        <textarea class="form-control" id="supervisor_comments" name="supervisor_comments" rows="5" placeholder="Type N/A if there is nothing to add" required></textarea>
+                    </div>
+        <div class="update-button">
+       <input class="btn btn-right" type="submit" name="submit" id="submit" value="Submit" onclick="return confirm('Are you sure you want to submit?');" >
+             <input type="hidden" name="report_id" value="{{report_id}}">
+    </div>
+        </form>
+        </div>
+  </div>
+
+    </main>
+
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<style>
+
+.card{
+    border:none;
+    border-radius: 0;
+}
+
+.form-control {
+  margin:10px 0;
+}
+
+select.form-control:not([size]):not([multiple]) {
+  height: auto;
+}
+.section-intro li {
+    list-style: square;
+    list-style-position: inside;
+}
+
+strong {
+    margin-right: 10px;
+  }
+
+  .first-option{
+  color:#bbb;
+  }
+</style>
+
+
+{% endblock %}

@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if user_role %}
+{% include 'navbar.html' %}
+{% endif %}
+
+
+<main>
+
+    <h3 class="list-title">Students' Report Administration</h3>
+    {% if message %}
+            {% if alertStyling == "Red" %}
+            <div class="alert alert-danger" role="alert">
+            {% elif alertStyling == "Green" %}
+            <div class="alert alert-success" role="alert">
+                {% elif alertStyling == "Yellow" %}
+            <div class="alert alert-warning" role="alert">
+            {% else %}
+            <div>
+            {% endif %}
+
+          {{message}}</div>
+        {% endif %}
+        <ul class="nav nav-tabs">
+          <li {% if report=='undone' %} class="active" {% endif %}><a href="/admin/send_reminder?report=undone">Send
+              Reminder</a></li>
+          <li {% if report=='done' %} class="active" {% endif %}><a href="/admin/send_reminder?report=done">Mark As
+              Completed</a></li>
+          <li {% if report=='completed' %} class="active" {% endif %}><a href="/admin/send_reminder?report=completed">
+              Completed Report</a></li>
+        </ul>
+
+        <div class="card">
+          <div class="row">
+            <form action="/admin/send_reminder" method="POST">
+
+              <div class="title-line">
+                <label for="inputGroupSelect">Department:</label>
+                <select class="custom-select" id="inputGroupSelect" name="inputGroupSelect">
+                  <option value="ALL" {% if sort_depart=='ALL' %} selected {% endif %}>All</option>
+                  <option value="DEM" {% if sort_depart=='DEM' %} selected {% endif %}>DEM</option>
+                  <option value="DTSS" {% if sort_depart=='DTSS' %} selected {% endif %}>DTSS</option>
+                  <option value="SOLA" {% if sort_depart=='SOLA' %} selected {% endif %}>SOLA</option>
+                </select>
+                <input type="submit" value="Submit" class="btn btn-right">
+                <input type="hidden" name="report" value="{{report}}">
+              </div>
+            </form>
+            <!-- Search section -->
+            <div class="title-line">
+              <form method="POST" onsubmit="return validateSearch()">
+                <input type="text" id="search" name="search" placeholder="Student Name..." pattern="[A-Za-z]+">
+                <input type="hidden" name="report" value="{{report}}">
+                <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+              </form>
+            </div>
+            <a href="/admin/send_reminder?report={{report}}" id="reset">
+              <button class="btn" type="submit">RESET</button>
+            </a>
+          </div>
+
+
+    {% if select_result %}
+          <div>
+            <p>Note:</p>
+            <p class="table-note">- DEM: Department of Environmental Management. DTSS: Department of Tourism, Sport and
+              Society. SOLA: School of Landscape Architecture </p>
+          </div>
+
+          <div class="table_row">
+              {% if report =='undone' %}
+            <button class="btn-delete" onclick="selectAll()">Select All</button>
+            {% endif %}
+            <form action="/admin/send_reminder/submit" method="POST">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    {% if report == 'undone'%}
+                    <th></th>
+                    {% endif %}
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Student Name</th>
+                    <th scope="col">Department</th>
+                    <th scope="col">Supervisors</th>
+                    <th scope="col">Report Term</th>
+                    <th scope="col">Due Date</th>
+                    {% if report =='completed' %}
+                      <th scope="col">Status</th>
+                      <th scope="col">Report</th>
+                      <th></th>
+                    {% else %}
+                      <th scope="col">In Charge Role</th>
+                      <th></th>
+                    {% endif %}
+                    {% if report =='done' %}
+                        <th scope="col">Report</th>
+                        <th scope="col">Status</th>
+                        
+                    {% endif %}
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for students in select_result %}
+                  <tr>
+                    {% if report == 'undone' %}
+                    <td><input type="checkbox" name="select_student"
+                        value="{{(students[0],students[6],students[1],students[7]),students[5]}}"></td>
+          
+                    {% endif %}
+   
+                
+                     {% for student in students[:-2] %}
+                        {% if loop.last %}
+                            {% if student == 1 or student == None %}
+                                <td><span class="role student">Student</span></td>
+                            {% elif student == 2 %}
+                                <td><span class="role sup">Supervisor:{{students[8]}}</span></td>
+                            {% elif student == 3 %}
+                                <td><span class="role convenor">Convenor</span></td>
+                            {% elif student == 6 %}
+                                <td><span class="role done">Completed</span></td>
+                                <td>
+                                  <a href="/view_report/sectionA?report_id={{students[7]}}&term={{students[4]}}&routing=done_report"
+                                    class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>View Report</a>
+                                </td>
+                            {% elif student == 5 %}
+                                <td><span class="role other">Admin</span></td>
+                            {% else %}
+                                <td>{{student}}</td>
+                            {% endif %}
+                        {% else %}
+                            {% if student =='DEM' %}
+                            <td><span class="depart dem">DEM</span></td>
+                            {% elif student=='DTSS' %}
+                            <td><span class="depart dtss">DTSS</span></td>
+                            {% elif student=='SOLA' %}
+                            <td><span class="depart sola">SOLA</span></td>
+                            {% elif student == None %}
+                            <td>Not started</td>
+                            {% else %}
+                            <td>{{student}}</td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                      {% if students[5] %}
+                    {% if students[5] < current_date %}
+                  <td><span class="depart overdue">Overdue</span></td>
+
+                  {% else %}
+                  <td></td>
+
+
+                 {% endif %}
+             {% endif %}
+                  
+                    {% if report == 'done' %}
+                        <td>
+                          <a href="/view_report/sectionA?report_id={{students[7]}}&term={{students[4]}}&routing=1"
+                            class="btn-update" name="view_report"><i class="fa-solid fa-eye"></i>
+                            View Report
+                          </a>
+                        </td>
+                        <td>
+                          <a class="btn-delete"
+                            href="/admin/mark_completed?report_id={{students[7]}}&student_id={{students[0]}}&student_name={{students[1]}}"
+                            onclick="return confirm_mark();">
+                            Mark As Done
+                          </a>
+                        </td>
+
+                    {% endif %}
+                  </tr>
+
+                  {% endfor %}
+
+                </tbody>
+
+              </table>
+              {% if report =='undone' %}
+              <div>
+                <button class="btn" type="submit" name="send_reminder">Send Reminder</button>
+              </div>
+              {% endif %}
+                {% if pagination_exist=='Yes' %}
+                        <div class="pagination">
+                            {{ pagination.links }}
+                        </div>
+                        {% endif %}
+            </form>
+
+          </div>
+        </div>
+
+     {% else %}
+         <h3 class="no-record">Sorry,we can't find any student record.</h3>
+ {% endif %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script>
+
+function validateSearch() {
+  var searchInput = document.getElementById("search").value;
+  if (searchInput == "") {
+    alert("Sorry,you have not entered any search terms, please re-enter it.");
+    return false;
+  }
+  return true;
+}
+
+  function selectAll() {
+    var checkboxes = document.getElementsByName('select_student');
+    var isAllChecked = true;
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].checked === false) {
+        isAllChecked = false;
+        break;
+      }
+    }
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = !isAllChecked;
+    }
+  }
+
+  function confirm_mark() {
+    var result = confirm('Are You sure this report is all done and mark it as completed?');
+    if (result) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+
+ const input = document.getElementById('search');
+    const filter = document.getElementById('inputGroupSelect');
+
+    input.addEventListener('input', () => {
+        if (input.value.length > 0) {
+            filter.disabled = true;
+        } else {
+            filter.disabled = false;
+        }
+    });
+
+    filter.addEventListener('change', () => {
+        if (filter.value.length > 0) {
+            input.disabled = true;
+        } else {
+            input.disabled = false;
+        }
+    });
+
+</script>
+
+<style>
+  .card {
+    border-top: none;
+    border-radius: 0;
+  }
+
+  .role {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    }
+
+    .student {
+    color: #339999;
+    }
+
+    .sup {
+    color: #666699;
+    }
+
+
+ .convenor {
+    color: #CC99CC;
+    }
+
+ .other {
+    color: #993333;
+    }
+
+    .done{
+    background-color: #1A544D;
+    color: white;
+    }
+
+ .title-line select{
+    width:150px;
+    padding:5px 10px;
+    height: 35px;
+}
+
+tr {
+   border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.overdue{
+    background-color: #ff3333;
+     color: #fff;
+}
+.btn-delete{
+margin-bottom:10px;
+}
+
+.pagination {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #38998F;
+        }
+</style>
+
+
+{% endblock %}
