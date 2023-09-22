@@ -13,16 +13,5 @@
 2.	The first page is log in page, and in the user table of database, you could choose the role you want to log in.  
 
 ## What the web app looks like
-
-
-
-
-
-
-
-
-
-
-
-
-![Admin Page](https://github.com/wanjun3211/fitnessClub/blob/main/admin%20page.PNG)
+Admin page
+![Admin Page](https://github.com/wanjun3211/StudentFormProcess/blob/main/admin%20page.PNG)
