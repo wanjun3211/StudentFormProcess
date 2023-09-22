@@ -13,5 +13,21 @@
 2.	The first page is log in page, and in the user table of database, you could choose the role you want to log in.  
 
 ## What the web app looks like
-Admin page
+Admin Page
 ![Admin Page](https://github.com/wanjun3211/StudentFormProcess/blob/main/admin%20page.PNG)
+
+
+Convenor Page
+![Convenor Page](https://github.com/wanjun3211/StudentFormProcess/blob/main/convener%20page.PNG)
+
+
+Supervisor Page
+![Supervisor Page](https://github.com/wanjun3211/StudentFormProcess/blob/main/admin%20page.PNG)
+
+
+Student Page
+![Student Page](https://github.com/wanjun3211/StudentFormProcess/blob/main/student%20page.PNG)
+
+
+Chair Page
+![Chair Page](https://github.com/wanjun3211/StudentFormProcess/blob/main/chair%20page.PNG)
